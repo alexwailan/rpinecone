@@ -13,3 +13,4 @@ Suggests: testthat
 Imports: geiger (>= 2.0.6), ape (>= 4.1), igraph (>= 1.1.2), BMhyd (>= 1.2-8), phangorn (>= 2.2.0), phytools (>= 0.6-20)
 RoxygenNote: 6.0.1
 URL: http://github.com/alexwailan/maria
+BugReports: http://github.com/alexwailan/maria/issues
