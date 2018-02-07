@@ -26,5 +26,5 @@ tips_node_zero_dist <- function(node, subtree, igraph.tree, tree, ntips){
     }
   }
   tips_zero_distance <- tips_zero_distance[tips_zero_distance != 0] #clearing elements in the vector that are zero
-  return(tips_node_zero_dist)
+  return(tips_zero_distance)
 }

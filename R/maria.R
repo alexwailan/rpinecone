@@ -7,7 +7,6 @@
 #' each sub-group must have if they are to be declared as major sub-groups
 #' @param sample_id_file CSV file, with a list of sample ids in the first column
 #' and sample ids in the second column
-#' @param output If you want an output, Default: TRUE
 #' @import geiger
 #' @import ape
 #' @import igraph
@@ -15,7 +14,7 @@
 #' @import phangorn
 #' @import phytools
 
-maria <- function(tree,thresh,rthreshold, output){
+maria <- function(tree,thresh,rthreshold){
 
   #Retrieving date for output file naming purposes.
   Date <- Sys.Date()
@@ -355,25 +354,24 @@ maria <- function(tree,thresh,rthreshold, output){
   #Number of singletons after sub-grouping
   remaining_singletons <- which(assign[1:ntips] == 0)
 
+
+
    # collating variables from above
    output <- list(
 
      #Assigned subgroup number for each leaf/tip
-     subgroupmems <- assign,
+     subgroupmems = assign,
 
      #sizes for each subgroup; including both leaves and internal nodes
-     allcsize <- table(assign),
+     allcsize = table(assign),
 
      #sizes for each subgroup; leaves/tips only
-     leafclustsize <- table(assign[1:ntips]),
+     leafclustsize = table(assign[1:ntips]),
 
      #stating the number of tips in the tree
-     ntips <- ntips,
+     ntips = ntips,
 
-     #stating the maximum distance that will define a claded
-     threshold <- thresh,
-
-     majorsubgroupmems <- maj_subgroup_assign,
+     majorsubgroupmems = maj_subgroup_assign,
 
      singletons <- remaining_singletons)
 
