@@ -9,9 +9,12 @@
 
 maria <- function(tree,thresh,rthreshold,sample_id_file){
 
-  Date <- Sys.Date() #Retrieving date for output file naming purposes.
+  #Retrieving date for output file naming purposes.
+  Date <- Sys.Date()
 
-  #DEV TEST
+  tree <- read.newick(tree)
+
+  thresh <- thresh
   return(thresh)
 
   #Resolving dichotomies by deleting all branches smaller than 0.5 i.e. zero SNPs and collapses the corresponding dichotomies into a multichotomy.
