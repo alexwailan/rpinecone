@@ -14,8 +14,6 @@ maria <- function(tree,thresh,rthreshold){
 
   tree <- read.newick(tree)
 
-  thresh <- thresh
-  return(thresh)
 
   #Resolving dichotomies by deleting all branches smaller than 0.5 i.e. zero SNPs and collapses the corresponding dichotomies into a multichotomy.
   tree <- di2multi(tree, 0.5)
