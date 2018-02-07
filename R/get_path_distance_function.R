@@ -1,4 +1,5 @@
-#' get_path_distance
+#' Get the distance of a path
+#'
 #' This function returns the path distance between node and tip on a rooted tree, in a root to tip direction.
 #' @param graph_tree A rooted tree of newick format, converted into graph form by igraph.
 #' @param root A node in the graph you want to begin the path.

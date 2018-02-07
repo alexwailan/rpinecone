@@ -5,6 +5,7 @@
 #' @param igraph.tree a tree converted into graph format by igraph
 #' @param node that is the root of the subtree
 #' @param tree Newick formatted ACCTRANS tree
+#' @param ntips Number of isolates on the phylogenetic tree
 #' @import ape
 #' node_tips_max_dis()
 

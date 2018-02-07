@@ -1,4 +1,6 @@
 #' maria
+#'
+#' Grouping isolates together using an ACCTRANS tree, from root-to-tip.
 #' @param tree Newick formatted ACCTRANS tree.
 #' @param thresh SNP threshold for sub-grouping isolates.
 #' @param rthreshold The threhold number of ancestral nodes to the root
@@ -93,7 +95,7 @@ maria <- function(tree,thresh,rthreshold){
         node_tips_max_dist <- node_tips_max_dist(node, subtree, igraph.tree, tree, ntips)
 
         #Define the tips connected to node at zero distance
-        tips_0_dist_node <- tips_zero_distance_node(node, subtree, igraph.tree, tree)
+        tips_0_dist_node <- tips_node_zero_dist(node, subtree, igraph.tree, tree, ntips)
 
         #Logical sub-grouping numbering; composed of  two parameters - threshold && zero distance
 
