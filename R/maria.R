@@ -5,8 +5,6 @@
 #' @param thresh SNP threshold for sub-grouping isolates.
 #' @param rthreshold The threhold number of ancestral nodes to the root
 #' each sub-group must have if they are to be declared as major sub-groups
-#' @param sample_id_file CSV file, with a list of sample ids in the first column
-#' and sample ids in the second column
 #' @import geiger
 #' @import ape
 #' @import igraph
@@ -34,11 +32,11 @@ maria <- function(tree,thresh,rthreshold){
   tree$node.label <- paste("Node", seq(1, tree$Nnode, 1), sep = "_")
 
 
-  #===============================================================================================#
-  #                                                                                               #
-  #                               Define variables for Sub-grouping                               #
-  #                                                                                               #
-  #===============================================================================================#
+  #===========================================================================#
+  #                                                                           #
+  #                  Define variables for Sub-grouping                        #
+  #                                                                           #
+  #===========================================================================#
 
   # Number of tips
   ntips <- Ntip(tree)
@@ -61,11 +59,11 @@ maria <- function(tree,thresh,rthreshold){
                    order = TRUE,
                    dist = TRUE)
 
-  #===============================================================================================#
-  #                                                                                               #
-  #                                  Investigating edge distances                                 #
-  #                                                                                               #
-  #===============================================================================================#
+  #===========================================================================#
+  #                                                                           #
+  #                       Investigating edge distances                        #
+  #                                                                           #
+  #===========================================================================#
 
   # Traverse the tree in depth first order - starting at the root
     for (i in 1:length(dfs$order)){
@@ -135,11 +133,11 @@ maria <- function(tree,thresh,rthreshold){
 
   } # End of for loop
 
-  #===============================================================================================#
-  #                                                                                               #
-  #                            Identification of Major Sub-Grouping                               #
-  #                                                                                               #
-  #===============================================================================================#
+  #===========================================================================#
+  #                                                                           #
+  #                   Identification of Major Sub-Grouping                    #
+  #                                                                           #
+  #===========================================================================#
 
   iteration <- 0
   sg_intersect_list <- list()
@@ -250,14 +248,15 @@ maria <- function(tree,thresh,rthreshold){
 
   }
 
-  #===============================================================================================#
-  #                                                                                               #
-  #                 Identification of Major Sub-Grouping: Singleton Analysis                      #
-  #                                                                                               #
-  #===============================================================================================#
+  #===========================================================================#
+  #                                                                           #
+  #       Identification of Major Sub-Grouping: Singleton Analysis            #
+  #                                                                           #
+  #===========================================================================#
 
 
-  # Check all singletons if they are related to isolates in a Sub-Group; if that cluster is apart of the Major Sub-Group, assign singleton to Major Sub-Group
+  # Check all singletons if they are related to isolates in a Sub-Group;
+  #  if that cluster is apart of the Major Sub-Group, assign singleton to Major Sub-Group
 
   # Step 1: Retrieve ancestor nodes of each singleton and store them
   singleton_ancestor_list <- NULL
@@ -386,11 +385,11 @@ maria <- function(tree,thresh,rthreshold){
 
 
 
-  #===============================================================================================#
-  #                                                                                                 #
-  #                                    Saving subgrouping results                                   #
-  #                                                                                                 #
-  #===============================================================================================#
+  #===========================================================================#
+  #                                                                           #
+  #                        Saving subgrouping results                         #
+  #                                                                           #
+  #===========================================================================#
 
 
   # # Compiling all meta data, subgrouping and major sub-groups for output.
