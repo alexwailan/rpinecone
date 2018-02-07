@@ -32,5 +32,3 @@ print(thresh)
 # test_check("load_tree_function")
 
 
-test_that("Input for thresh is recognised",expect_equal(maria_thresh,2))
-

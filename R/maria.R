@@ -5,7 +5,12 @@
 #' each sub-group must have if they are to be declared as major sub-groups
 #' @param sample_id_file CSV file, with a list of sample ids in the first column
 #' and sample ids in the second column
-#' @import geiger ape igraph BMhyd phangorn phytools
+#' @import geiger
+#' @import ape
+#' @import igraph
+#' @import BMhyd
+#' @import phangorn
+#' @import phytools
 
 maria <- function(tree,thresh,rthreshold){
 
@@ -85,7 +90,7 @@ maria <- function(tree,thresh,rthreshold){
         subtree <- subtree[!is.na(subtree)]
 
         #Define maximum distance amongst all tips from said node
-        node_tips_max_dist <- node_tips_max_dist(node, subtree, igraph.tree, tree)
+        node_tips_max_dist <- node_tips_max_dist(node, subtree, igraph.tree, tree, ntips)
 
         #Define the tips connected to node at zero distance
         tips_0_dist_node <- tips_zero_distance_node(node, subtree, igraph.tree, tree)

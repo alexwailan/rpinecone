@@ -5,9 +5,10 @@
 #' @param igraph.tree a tree converted into graph format by igraph
 #' @param node that is the root of the subtree
 #' @param tree Newick formatted ACCTRANS tree
+#' @import ape
 #' node_tips_max_dis()
 
-node_tips_max_dist <- function(node, subtree, igraph.tree, tree){
+node_tips_max_dist <- function(node, subtree, igraph.tree, tree, ntips){
 
   #retrieve tips under said node
   tips_under_node <- subtree[which(subtree <= ntips)]
