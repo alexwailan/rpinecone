@@ -195,7 +195,7 @@ maria <- function(tree,thresh,rthreshold){
 
   #Combination Function! need to combine lists with overlapping sgnum; Goal: If there are overlapping numbers in differents lists combine them
   for (i in seq_along(major_subgroup_intersect)
-       [-length(major_subgroup_intersect)]) {
+       [-length(major_subgroup_intersect)]){
    if (length(intersect(major_subgroup_intersect[[i]],
                         major_subgroup_intersect[[i + 1]])) > 0) {
 
@@ -359,21 +359,23 @@ maria <- function(tree,thresh,rthreshold){
    # collating variables from above
    output <- list(
 
-     #Assigned subgroup number for each leaf/tip
+     #1: Assigned subgroup number for each leaf/tip
      subgroupmems = assign,
 
-     #sizes for each subgroup; including both leaves and internal nodes
-     allcsize = table(assign),
+     #2: sizes for each subgroup; including both leaves and internal nodes
+     allsbsize = table(assign),
 
-     #sizes for each subgroup; leaves/tips only
-     leafclustsize = table(assign[1:ntips]),
+     #3: sizes for each subgroup; leaves/tips only
+     leafsubgroupsize = table(assign[1:ntips]),
 
-     #stating the number of tips in the tree
+     #4: stating the number of tips in the tree
      ntips = ntips,
 
+     #5: The major subgroup number for each node
      majorsubgroupmems = maj_subgroup_assign,
 
-     singletons <- remaining_singletons)
+     #6: Singleton nodes
+     singletons = remaining_singletons)
 
    #subsetting the "membership" to only include tips/leaves
    output$subgroupmems <- output$subgroupmems[1:ntips]
