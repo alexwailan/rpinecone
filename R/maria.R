@@ -7,7 +7,7 @@
 #' and sample ids in the second column
 #' @import geiger ape igraph BMhyd phangorn phytools
 
-maria <- function(tree,thresh,rthreshold,sample_id_file){
+maria <- function(tree,thresh,rthreshold){
 
   #Retrieving date for output file naming purposes.
   Date <- Sys.Date()
