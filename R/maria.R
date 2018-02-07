@@ -16,21 +16,21 @@
 
 maria <- function(tree,thresh,rthreshold){
 
-  #Retrieving date for output file naming purposes.
+  # Retrieving date for output file naming purposes.
   Date <- Sys.Date()
 
   tree <- read.newick(tree)
 
 
-  #Resolving dichotomies by deleting all branches smaller than 0.5 i.e. zero SNPs and collapses the corresponding dichotomies into a multichotomy.
+  # Resolving dichotomies by deleting all branches smaller than 0.5 i.e. zero SNPs and collapses the corresponding dichotomies into a multichotomy.
   tree <- di2multi(tree, 0.5)
   tree_name <- paste("NewickTreefile_", Date, ".tre")
-  write.tree(tree, file = tree_name) #Output the new tree.
+  write.tree(tree, file = tree_name) # Output the new tree.
 
-  #Display Number of Taxa in Tree.
+  # Display Number of Taxa in Tree.
   cat("\t", length(tree$tip.label), " taxa found from phylogenetic tree\n", sep = "")
 
-  #Renaming the node labels; at a sequence from 1 to (number of nodes in tree), at increments of 1.
+  # Renaming the node labels; at a sequence from 1 to (number of nodes in tree), at increments of 1.
   tree$node.label <- paste("Node", seq(1, tree$Nnode, 1), sep = "_")
 
 
@@ -40,20 +40,21 @@ maria <- function(tree,thresh,rthreshold){
   #                                                                                               #
   #===============================================================================================#
 
-  #Number of tips
+  # Number of tips
   ntips <- Ntip(tree)
 
   # setting a Sub-Group number - will tick up as more clusters are identified
   sgnum <- 0
 
-  # cluster assignment - rep replicates the values found in x. rep(x, ...); generating a vector the size of ntips+tree$Nnode corresponding to the number of positions within the tree data
+  # cluster assignment - rep replicates the values found in x. rep(x, ...);
+  # generating a vector the size of ntips+tree$Nnode corresponding to the number of positions within the tree data
   assign <- rep(0, ntips + tree$Nnode)
 
   # convert tree in igraph form - Takes a 2 column matrix edge list, where each row is an existing edge
   igraph.tree <- graph.edgelist(tree$edge)
 
-  #Depth First Search traverses a graph, begins at a "root" vertex and tries to go quickly as far from as possible
-  #Order - return the DFS ordering of the vertices; dist - return the distance from the root of the search tree
+  # Depth First Search traverses a graph, begins at a "root" vertex and tries to go quickly as far from as possible
+  # Order - return the DFS ordering of the vertices; dist - return the distance from the root of the search tree
   dfs <- graph.dfs(igraph.tree,
                    root = ntips + 1,
                    neimode = "out",
@@ -66,7 +67,7 @@ maria <- function(tree,thresh,rthreshold){
   #                                                                                               #
   #===============================================================================================#
 
-  #Traverse the tree in depth first order - starting at the root
+  # Traverse the tree in depth first order - starting at the root
     for (i in 1:length(dfs$order)){
       node <- dfs$order[i]
 
@@ -168,32 +169,31 @@ maria <- function(tree,thresh,rthreshold){
     sg_intersect_list[i] <- list(sub_intersect)
   }
 
-  #combinations in columns
+  # combinations in columns
   combinations <- combn(length(sg_intersect_list), 2)
 
-  #Take the ancestor nodes of each Sub-Group and setup a paired-wise comparison  - list of lists of the combinations
+  # Take the ancestor nodes of each Sub-Group and setup a paired-wise comparison  - list of lists of the combinations
   ll <- combn(sg_intersect_list, 2, simplify = FALSE )
 
   # Pair-wise Comparison Function! Intersect the list elements - find the intersect &  the length
   out <- lapply( ll, function(x) length( intersect( x[[1]], x[[2]] ) ) )
 
-  #which Pair-wise comparisons have more than two internal nodes
+  # which Pair-wise comparisons have more than two internal nodes
 
-  #Declare an empty variable to store wanted comparisons
+  # Declare an empty variable to store wanted comparisons
   major_subgroup_intersect <- list()
 
-  #which lists in the Pair-wise comparison list of lists have equal or more than internal node relatibility threshold
+  # which lists in the Pair-wise comparison list of lists have equal or more than internal node relatibility threshold
   major_subgroup_comb <- which(out >= rthreshold)
 
-  #Extracting the subgroup number for the above
+  # Extracting the subgroup number for the above
   for (i in 1:length(major_subgroup_comb)){
-
    combin_element <- combinations[, major_subgroup_comb[i]]
    major_subgroup_intersect[[i]] <- combin_element
 
   }
 
-  #Combination Function! need to combine lists with overlapping sgnum; Goal: If there are overlapping numbers in differents lists combine them
+  # Combination Function! need to combine lists with overlapping sgnum; Goal: If there are overlapping numbers in differents lists combine them
   for (i in seq_along(major_subgroup_intersect)
        [-length(major_subgroup_intersect)]){
    if (length(intersect(major_subgroup_intersect[[i]],
@@ -206,13 +206,13 @@ maria <- function(tree,thresh,rthreshold){
    }
   }
 
-  #Take only the rows with something in it - The major subgroup list is then created
+  # Take only the rows with something in it - The major subgroup list is then created
   major_subgroup <- Filter(function(x) length(x) > 0, major_subgroup_intersect)
 
-  #Number of Major SubGroup
+  # Number of Major SubGroup
   numbmajorsubgroup <- length(major_subgroup)
 
-  #Retrieving the SubGroup numbers for each Major SubGroup, retrieve the SubGroup's tips and storing them in a vector according to the tree
+  # Retrieving the SubGroup numbers for each Major SubGroup, retrieve the SubGroup's tips and storing them in a vector according to the tree
   maj_subgroup_mems <- NULL
   maj_subgroup_assign <- rep(0, ntips + tree$Nnode)
 
@@ -221,12 +221,12 @@ maria <- function(tree,thresh,rthreshold){
     maj_subgroup_mems <- NULL
 
 
-    #Within the Major Sub-Group, call the tips of each Sub-Group and store them in "maj_subgroup_mems"
+    # Within the Major Sub-Group, call the tips of each Sub-Group and store them in "maj_subgroup_mems"
     for (i in major_subgroup[[x]]){
      maj_subgroup_mems <- c(maj_subgroup_mems, which(assign == i))
      }
 
-    #Similar to the "assign" vector, for each tip noted with the major cluster in the positions of the tips
+    # Similar to the "assign" vector, for each tip noted with the major cluster in the positions of the tips
     maj_subgroup_assign[maj_subgroup_mems] <- x
 
   }
@@ -235,15 +235,15 @@ maria <- function(tree,thresh,rthreshold){
   sgnum_major_subgroup_list <- matrix(ncol = 2, nrow = length(unlist(major_subgroup)))
   sgnum_major_subgroup_list_interation <- 0
 
-  #each list is a major cluster i.e. [[1]] is the 1st major cluster
+  # each list is a major cluster i.e. [[1]] is the 1st major cluster
   for (i in 1:length(major_subgroup)){
 
-    #extracting each SGnum
+    # extracting each SGnum
     for (j in major_subgroup[[i]]){
 
       sgnum_major_subgroup_list_interation <- sgnum_major_subgroup_list_interation + 1
 
-      #appending each row with sgnum and respective major cluster
+      # appending each row with sgnum and respective major cluster
       sgnum_major_subgroup_list[sgnum_major_subgroup_list_interation, ] <- c(j, i)
 
     }
@@ -259,99 +259,99 @@ maria <- function(tree,thresh,rthreshold){
 
   # Check all singletons if they are related to isolates in a Sub-Group; if that cluster is apart of the Major Sub-Group, assign singleton to Major Sub-Group
 
-  #Step 1: Retrieve ancestor nodes of each singleton and store them
+  # Step 1: Retrieve ancestor nodes of each singleton and store them
   singleton_ancestor_list <- NULL
 
-  #Singletons are those without an assign sgnum
+  # Singletons are those without an assign sgnum
   singleton_elements <- which(assign[1:ntips] == 0)
 
-  #Declare how may singletons
+  # Declare how may singletons
   nsingleton <- length(singleton_elements)
 
-  #combinations in columns
+  # combinations in columns
   combinations <- combn(length(sg_intersect_list), 2)
 
-  #Retrieve ancestors for  said singleton & store into a list
+  # Retrieve ancestors for  said singleton & store into a list
   for (i in 1:nsingleton){
    said_singleton <- singleton_elements[i]
 
-   #generate a list of each sgnum taking the 1st element
+   # generate a list of each sgnum taking the 1st element
    singleton_ancestors <- Ancestors(tree, said_singleton, type = c("all"))
 
-   #list in order of singleton number
+   # list in order of singleton number
    singleton_ancestor_list[i] <- list(singleton_ancestors)
 
   }
 
-  #Step 2: Create a basis to compare the ancestor nodes of each singleton with those of each sgnum
+  # Step 2: Create a basis to compare the ancestor nodes of each singleton with those of each sgnum
 
-  #Pairwise comparison combinations are based per singleton against all sgnums;
-  #ancestor nodes of said singleton will be listed in var2, in combination with the number sgnums and their respective ancestor nodes
-  #i.e each singleton comparison is in a set of rows the size the number of sgnums identified
-  #e.g. first singleton is row 1 to row(no of cums), second singleton is the next set of rows after to the number of sgnums
+  # Pairwise comparison combinations are based per singleton against all sgnums;
+  # ancestor nodes of said singleton will be listed in var2, in combination with the number sgnums and their respective ancestor nodes
+  # i.e each singleton comparison is in a set of rows the size the number of sgnums identified
+  # e.g. first singleton is row 1 to row(no of cums), second singleton is the next set of rows after to the number of sgnums
   result.df <- expand.grid(sg_intersect_list, singleton_ancestor_list)
 
-  #for each singleton retrieve the "block" of said singleton + sgnum combinations
+  # for each singleton retrieve the "block" of said singleton + sgnum combinations
   for (i in 1:nsingleton){
 
-    #Define the block
+    # Define the block
     singleton_sgnum_length <- rep(0, sgnum)
     single_block_start <- (sgnum * i) - sgnum + 1
     single_block_end <- i * sgnum
     single_block <- result.df[single_block_start:single_block_end, ]
 
-    #x is the sgnum number
+    # x is the sgnum number
     for (x in 1:nrow(single_block)){
 
-      #Determine the intersect for a said row i.e. Singleton vs sgnum(which is row number)
+      # Determine the intersect for a said row i.e. Singleton vs sgnum(which is row number)
       int <- Reduce(intersect, lapply(single_block, "[[", x))
 
-      #Storing how many internal nodes of a Sub-Group intersect with said singleton over or equal to set Relibility Threshold
+      # Storing how many internal nodes of a Sub-Group intersect with said singleton over or equal to set Relibility Threshold
       if (length(int) >= rthreshold){
 
         singleton_sgnum_length[[x]] <- length(int)
 
       }
 
-      #which sgnum overlap  equal or more in internal nodes with said singleton no
+      # which sgnum overlap  equal or more in internal nodes with said singleton no
       sgnum_for_singleton_int <- which(singleton_sgnum_length >= rthreshold)
 
-      #singleton needs to have intersected with a sgnum && the sgnum needs to be have a major cluster to call it
+      # singleton needs to have intersected with a sgnum && the sgnum needs to be have a major cluster to call it
       if (length(sgnum_for_singleton_int) > 0 && any(sgnum_major_subgroup_list[, 1] %in% sgnum_for_singleton_int) ){
 
-        #given the list of each sgnum and their corresponding major Sub-Group - retrieve corresponding major Sub-group
+        # given the list of each sgnum and their corresponding major Sub-Group - retrieve corresponding major Sub-group
         majsb_of_singleton <- sgnum_major_subgroup_list[
-          #rows which desired sgnums
+          # rows which desired sgnums
           which(sgnum_major_subgroup_list[, 1] %in% sgnum_for_singleton_int),
-          2 #2nd column is where the major cluster is stored
+          2 # 2nd column is where the major cluster is stored
                                                         ]
 
-        #If a singleton has a unique major cluster, store it in the major cluster assigning vector
-        #results are a vector calling a Major cluster multiple times i.e. singleton can have same ancestral nodes with multiple sgnums
+        # If a singleton has a unique major cluster, store it in the major cluster assigning vector
+        # results are a vector calling a Major cluster multiple times i.e. singleton can have same ancestral nodes with multiple sgnums
 
-        #check if major cluster is unique, should have only one calling of a major cluster number.
+        # check if major cluster is unique, should have only one calling of a major cluster number.
         if (length(unique(majsb_of_singleton)) == 1){
 
-          #assign the major cluster to the singletons in maj_subgroup_assign
+          # assign the major cluster to the singletons in maj_subgroup_assign
           majclust <- unique(majsb_of_singleton)
 
-          #convert singleton number into the actual singleton tip number
+          # convert singleton number into the actual singleton tip number
           singleton_for_assign <- singleton_elements[i]
 
-          #assign the major cluster identified to the singleton
+          # assign the major cluster identified to the singleton
           maj_subgroup_assign[singleton_for_assign] <- majclust
 
         }else{
           cat(paste("Error: Two Major Subgroups identified for a singleton ", unique(majsb_of_singleton)), sep = "\n")
         }
 
-      } #End of If Statement: Major Cluster of a Singleton Identification
+      } # End of If Statement: Major Cluster of a Singleton Identification
 
     }
 
   }
 
-  #Number of singletons after sub-grouping
+  # Number of singletons after sub-grouping
   remaining_singletons <- which(assign[1:ntips] == 0)
 
 
@@ -359,25 +359,25 @@ maria <- function(tree,thresh,rthreshold){
    # collating variables from above
    output <- list(
 
-     #1: Assigned subgroup number for each leaf/tip
+     # 1: Assigned subgroup number for each leaf/tip
      subgroupmems = assign,
 
-     #2: sizes for each subgroup; including both leaves and internal nodes
-     allsbsize = table(assign),
+     # 2: sizes for each subgroup; including both leaves and internal nodes
+     allsgsize = table(assign),
 
-     #3: sizes for each subgroup; leaves/tips only
+     # 3: sizes for each subgroup; leaves/tips only
      leafsubgroupsize = table(assign[1:ntips]),
 
-     #4: stating the number of tips in the tree
+     # 4: stating the number of tips in the tree
      ntips = ntips,
 
-     #5: The major subgroup number for each node
+     # 5: The major subgroup number for each node
      majorsubgroupmems = maj_subgroup_assign,
 
-     #6: Singleton nodes
+     # 6: Singleton nodes
      singletons = remaining_singletons)
 
-   #subsetting the "membership" to only include tips/leaves
+   # subsetting the "membership" to only include tips/leaves
    output$subgroupmems <- output$subgroupmems[1:ntips]
    output$majorsubgroupmems <- output$majorsubgroupmems[1:ntips]
 
