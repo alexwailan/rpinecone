@@ -349,6 +349,9 @@ maria <- function(tree,thresh,rthreshold){
 
   }
 
+  # Number of singletons after sub-grouping
+  remaining_singletons <- which(assign[1:ntips] == 0)
+
 
   majorsubgrouptable <- mat.or.vec(length(tree$tip.label), 3)
 
@@ -416,8 +419,7 @@ maria <- function(tree,thresh,rthreshold){
   #                                                                           #
   #===========================================================================#
 
-   # # Number of singletons after sub-grouping
-   # remaining_singletons <- which(assign[1:ntips] == 0)
+
    #
    # # Compiling all meta data, subgrouping and major sub-groups for output.
    #

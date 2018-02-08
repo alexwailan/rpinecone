@@ -34,6 +34,8 @@ sample_id_file <- file.path("inst",
 
 output <- maria(tree,2,3)
 
+itol_labels_template(output$ntips,output$itolOutput)
+
 # test_check("maria")
 # test_check("get_path_distance_function")
 # test_check("load_tree_function")

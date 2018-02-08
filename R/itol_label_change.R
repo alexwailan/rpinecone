@@ -4,14 +4,13 @@
 #' This will change your tip labels to the sub-group number of the isolate
 #' @param tips number of tips on the phylogenetic tree
 #' @param table Table output from maria
-
-
-#NEED table output ... Can you put a table into the list output??
+#'
 
 itol_labels_template <- function(tips,table){
 
-Date <- Sys.Date()
-outputTable = mat.or.vec(length(tree$tip.label)+9,1)    #Blank Output
+Date <- Sys.Date ()
+colnames(table) <- NULL
+outputTable = mat.or.vec(tips +3, 1)    #Blank Output
 
 #Itol Header Settings
 outputTableHeaderVector <- rbind("LABELS",
@@ -22,19 +21,19 @@ outputTableHeaderVector <- rbind("LABELS",
 for(i in 1:3){ #Place headers into Table
   outputTable[i] <- outputTableHeaderVector[i,]
 }
-preparingTable = mat.or.vec(length(tips),2)
+preparingTable = mat.or.vec(tips,2)
 
-for(i in 1:nrow(table)){
+for(i in 1:tips){
+
   preparingTable[i,] <- table[i,c(1,2)] #Take the samples and their major cluster dupicated in two columns
+
 }
 
 
 for(i in 1:nrow(table)){ #With rows of the above table, collapse each row and its elements into one element for export after headers
   row = i +3
   outputTable[row] <- paste(preparingTable[i,],collapse=",")
-  print(outputTable[i+3])
 }
-
 
 subgroupoutput <- paste("subgroups_itol_label_output_", Date, ".txt", sep = "")
 write.table(outputTable, file = subgroupoutput, sep = ",", col.names = F, row.names = F, quote = F)
