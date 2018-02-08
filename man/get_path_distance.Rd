@@ -2,8 +2,7 @@
 % Please edit documentation in R/get_path_distance_function.R
 \name{get_path_distance}
 \alias{get_path_distance}
-\title{get_path_distance
-This function returns the path distance between node and tip on a rooted tree, in a root to tip direction.}
+\title{Get the distance of a path}
 \usage{
 get_path_distance(graph_tree, root, node, input_tree)
 }
@@ -21,6 +20,5 @@ The SNP distance between given root and node
 get_path_distance()
 }
 \description{
-get_path_distance
 This function returns the path distance between node and tip on a rooted tree, in a root to tip direction.
 }

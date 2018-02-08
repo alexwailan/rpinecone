@@ -19,7 +19,6 @@ maria <- function(tree,thresh,rthreshold){
 
   tree <- read.newick(tree)
 
-
   # Resolving dichotomies by deleting all branches smaller than 0.5 i.e. zero SNPs and collapses the corresponding dichotomies into a multichotomy.
   tree <- di2multi(tree, 0.5)
   tree_name <- paste("NewickTreefile_", Date, ".tre")
@@ -350,10 +349,32 @@ maria <- function(tree,thresh,rthreshold){
 
   }
 
-  # Number of singletons after sub-grouping
-  remaining_singletons <- which(assign[1:ntips] == 0)
 
+  majorsubgrouptable <- mat.or.vec(length(tree$tip.label), 3)
 
+  #Giving column names
+  colnames(majorsubgrouptable) <- c("Taxa", "Sub-group", "Major.Sub-group")
+
+  #Assign the 1st column of said matrix or vector to the name of the tips from the tree
+  majorsubgrouptable[, 1] <- tree$tip.label
+
+  #Assign the 2nd column of said matrix or vector to cluster it has been assigned
+  majorsubgrouptable[, 2] <- assign[1:ntips]
+
+  #Assign the 3rd column of said matrix or vector to Major cluster it has been assigned
+  majorsubgrouptable[, 3] <- maj_subgroup_assign[1:ntips]
+
+  #store positions/elements in the vector are equal to zero i.e. were not assigned a cluster number
+  majorzero_elems <- which(majorsubgrouptable[, 2] == 0)
+
+  #Said positions in vector are replaced with "singleton"
+  majorsubgrouptable[majorzero_elems, 2] <- "singleton_"
+
+  #store positions/elements in the vector have singleton i.e. were not assigned a cluster number
+  singletonsii <- which(majorsubgrouptable[, 2] == "singleton_")
+
+  #rename each position stated in "ii" with singleton plus a unique number using seq(1 to length of ii, by increments of 1)
+  majorsubgrouptable[singletonsii, 2] <- paste("singleton_", seq(1, length(singletonsii), 1), sep = "")
 
    # collating variables from above
    output <- list(
@@ -361,17 +382,21 @@ maria <- function(tree,thresh,rthreshold){
      # 1: Assigned subgroup number for each leaf/tip
      subgroupmems = assign,
 
-     # 2: sizes for each subgroup; including both leaves and internal nodes
+     # 2: The major subgroup number for each node
+     majorsubgroupmems = maj_subgroup_assign,
+
+     # 3: sizes for each subgroup; including both leaves and internal nodes
      allsgsize = table(assign),
 
-     # 3: sizes for each subgroup; leaves/tips only
+     # 4: Itol output table
+
+     itolOutput = majorsubgrouptable,
+
+     # 5: sizes for each subgroup; leaves/tips only
      leafsubgroupsize = table(assign[1:ntips]),
 
-     # 4: stating the number of tips in the tree
+     # 6: stating the number of tips in the tree
      ntips = ntips,
-
-     # 5: The major subgroup number for each node
-     majorsubgroupmems = maj_subgroup_assign,
 
      # 6: Singleton nodes
      singletons = remaining_singletons)
@@ -391,71 +416,51 @@ maria <- function(tree,thresh,rthreshold){
   #                                                                           #
   #===========================================================================#
 
+   # # Number of singletons after sub-grouping
+   # remaining_singletons <- which(assign[1:ntips] == 0)
+   #
+   # # Compiling all meta data, subgrouping and major sub-groups for output.
+   #
+   # majorsubgrouptable <- mat.or.vec(length(tree$tip.label), 4)
+   #
+   # #Giving column names
+   # colnames(majorsubgrouptable) <- c("Taxa", "Sample.ID", "Sub-group", "Major.Sub-group")
+   #
+   # #Assign the 1st column of said matrix or vector to the name of the tips from the tree
+   # majorsubgrouptable[, 1] <- tree$tip.label
+   #
+   # #matches in majorcluster
+   # filter_lanes <- match(majorsubgrouptable[, 1], Sample.ID[, 1])
+   #
+   # #reordering sample id via tree order
+   # Sample.ID.order <- Sample.ID[filter_lanes, ]
+   #
+   # #Assign the 2nd column of said matrix or vector to cluster it has been assigned
+   # majorsubgrouptable[, 2] <- Sample.ID.order[, 2]
+   #
+   # #Assign the 2nd column of said matrix or vector to cluster it has been assigned
+   # majorsubgrouptable[, 3] <- ans$subgroupmems
+   #
+   # #Assign the 3rd column of said matrix or vector to Major cluster it has been assigned
+   # majorsubgrouptable[, 4] <- ans$majorsubgroupmems
+   #
+   # #store positions/elements in the vector are equal to zero i.e. were not assigned a cluster number
+   # majorzero_elems <- which(majorsubgrouptable[, 3] == 0)
+   #
+   # #Said positions in vector are replaced with "singleton"
+   # majorsubgrouptable[majorzero_elems, 3] <- "singleton_"
+   #
+   # #store positions/elements in the vector have singleton i.e. were not assigned a cluster number
+   # singletonsii <- which(majorsubgrouptable[, 3] == "singleton_")
+   #
+   # #rename each position stated in "ii" with singleton plus a unique number using seq(1 to length of ii, by increments of 1)
+   # majorsubgrouptable[singletonsii, 3] <- paste("singleton_", seq(1, length(singletonsii), 1), sep = "")
+   #
 
-  # # Compiling all meta data, subgrouping and major sub-groups for output.
-  #
-  # if (exists(opt$sampleid)){
-  #   majorsubgrouptable <- mat.or.vec(length(tree$tip.label), 4)
-  #
-  #   #Giving column names
-  #   colnames(majorsubgrouptable) <- c("Taxa", "Sample.ID", "Sub-group", "Major.Sub-group")
-  #
-  #   #Assign the 1st column of said matrix or vector to the name of the tips from the tree
-  #   majorsubgrouptable[, 1] <- tree$tip.label
-  #
-  #   #matches in majorcluster
-  #   filter_lanes <- match(majorsubgrouptable[, 1], Sample.ID[, 1])
-  #
-  #   #reordering sample id via tree order
-  #   Sample.ID.order <- Sample.ID[filter_lanes, ]
-  #
-  #   #Assign the 2nd column of said matrix or vector to cluster it has been assigned
-  #   majorsubgrouptable[, 2] <- Sample.ID.order[, 2]
-  #
-  #   #Assign the 2nd column of said matrix or vector to cluster it has been assigned
-  #   majorsubgrouptable[, 3] <- ans$subgroupmems
-  #
-  #   #Assign the 3rd column of said matrix or vector to Major cluster it has been assigned
-  #   majorsubgrouptable[, 4] <- ans$majorsubgroupmems
-  #
-  #   #store positions/elements in the vector are equal to zero i.e. were not assigned a cluster number
-  #   majorzero_elems <- which(majorsubgrouptable[, 3] == 0)
-  #
-  #   #Said positions in vector are replaced with "singleton"
-  #   majorsubgrouptable[majorzero_elems, 3] <- "singleton_"
-  #
-  #   #store positions/elements in the vector have singleton i.e. were not assigned a cluster number
-  #   singletonsii <- which(majorsubgrouptable[, 3] == "singleton_")
-  #
-  #   #rename each position stated in "ii" with singleton plus a unique number using seq(1 to length of ii, by increments of 1)
-  #   majorsubgrouptable[singletonsii, 3] <- paste("singleton_", seq(1, length(singletonsii), 1), sep = "")
+
   #
   # } else {
-  #   majorsubgrouptable <- mat.or.vec(length(tree$tip.label), 3)
-  #
-  #   #Giving column names
-  #   colnames(majorsubgrouptable) <- c("Taxa", "Sub-group", "Major.Sub-group")
-  #
-  #   #Assign the 1st column of said matrix or vector to the name of the tips from the tree
-  #   majorsubgrouptable[, 1] <- tree$tip.label
-  #
-  #   #Assign the 2nd column of said matrix or vector to cluster it has been assigned
-  #   majorsubgrouptable[, 2] <- ans$subgroupmems
-  #
-  #   #Assign the 3rd column of said matrix or vector to Major cluster it has been assigned
-  #   majorsubgrouptable[, 3] <- ans$majorsubgroupmems
-  #
-  #   #store positions/elements in the vector are equal to zero i.e. were not assigned a cluster number
-  #   majorzero_elems <- which(majorsubgrouptable[, 2] == 0)
-  #
-  #   #Said positions in vector are replaced with "singleton"
-  #   majorsubgrouptable[majorzero_elems, 2] <- "singleton_"
-  #
-  #   #store positions/elements in the vector have singleton i.e. were not assigned a cluster number
-  #   singletonsii <- which(majorsubgrouptable[, 2] == "singleton_")
-  #
-  #   #rename each position stated in "ii" with singleton plus a unique number using seq(1 to length of ii, by increments of 1)
-  #   majorsubgrouptable[singletonsii, 2] <- paste("singleton_", seq(1, length(singletonsii), 1), sep = "")
+
   # }
   #
   #

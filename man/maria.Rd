@@ -4,7 +4,7 @@
 \alias{maria}
 \title{maria}
 \usage{
-maria(tree, thresh, rthreshold, sample_id_file)
+maria(tree, thresh, rthreshold)
 }
 \arguments{
 \item{tree}{Newick formatted ACCTRANS tree.}
@@ -13,10 +13,7 @@ maria(tree, thresh, rthreshold, sample_id_file)
 
 \item{rthreshold}{The threhold number of ancestral nodes to the root
 each sub-group must have if they are to be declared as major sub-groups}
-
-\item{sample_id_file}{CSV file, with a list of sample ids in the first column
-and sample ids in the second column}
 }
 \description{
-maria
+Grouping isolates together using an ACCTRANS tree, from root-to-tip.
 }

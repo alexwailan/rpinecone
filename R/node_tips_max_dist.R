@@ -1,3 +1,4 @@
+#' node_tips_max_dist
 #'
 #' Identify the maximum distance from an internal node amongst all
 #' tips
@@ -7,7 +8,7 @@
 #' @param tree Newick formatted ACCTRANS tree
 #' @param ntips Number of isolates on the phylogenetic tree
 #' @import ape
-#' node_tips_max_dis()
+#' node_tips_max_dist()
 
 node_tips_max_dist <- function(node, subtree, igraph.tree, tree, ntips){
 

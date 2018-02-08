@@ -2,10 +2,9 @@
 % Please edit documentation in R/node_tips_max_dist.R
 \name{node_tips_max_dist}
 \alias{node_tips_max_dist}
-\title{Identify the maximum distance from an internal node amongst all
-tips}
+\title{node_tips_max_dist}
 \usage{
-node_tips_max_dist(node, subtree, igraph.tree, tree)
+node_tips_max_dist(node, subtree, igraph.tree, tree, ntips)
 }
 \arguments{
 \item{node}{that is the root of the subtree}
@@ -14,8 +13,9 @@ node_tips_max_dist(node, subtree, igraph.tree, tree)
 
 \item{igraph.tree}{a tree converted into graph format by igraph}
 
-\item{tree}{Newick formatted ACCTRANS tree
-node_tips_max_dis()}
+\item{tree}{Newick formatted ACCTRANS tree}
+
+\item{ntips}{Number of isolates on the phylogenetic tree}
 }
 \description{
 Identify the maximum distance from an internal node amongst all

@@ -2,9 +2,9 @@
 % Please edit documentation in R/tips_node_zero_dist.R
 \name{tips_node_zero_dist}
 \alias{tips_node_zero_dist}
-\title{Identify tips within zero distance of internal node}
+\title{tips_node_zero_dist}
 \usage{
-tips_node_zero_dist(node, subtree, igraph.tree, tree)
+tips_node_zero_dist(node, subtree, igraph.tree, tree, ntips)
 }
 \arguments{
 \item{node}{that is the root of the subtree}
@@ -13,7 +13,9 @@ tips_node_zero_dist(node, subtree, igraph.tree, tree)
 
 \item{igraph.tree}{a tree converted into graph format by igraph}
 
-\item{tree}{Newick formatted ACCTRANS tree
+\item{tree}{Newick formatted ACCTRANS tree}
+
+\item{ntips}{Number of isolates on the phylogenetic tree
 tips_node_zero_dist()}
 }
 \description{
