@@ -232,7 +232,7 @@ maria <- function(tree,thresh,rthreshold){
   sgnum_major_subgroup_list <- matrix(ncol = 2, nrow = length(unlist(major_subgroup)))
   sgnum_major_subgroup_list_interation <- 0
 
-  # each list is a major cluster i.e. [[1]] is the 1st major cluster
+  # each list is a major subgroupu i.e. [[1]] is the 1st major subgroup
   for (i in 1:length(major_subgroup)){
 
     # extracting each SGnum
@@ -388,21 +388,26 @@ maria <- function(tree,thresh,rthreshold){
      # 2: The major subgroup number for each node
      majorsubgroupmems = maj_subgroup_assign,
 
-     # 3: sizes for each subgroup; including both leaves and internal nodes
+     # 3: Number of Major Subgroups
+     majorSBno = numbmajorsubgroup,
+
+     # 4: Singleton nodes
+     singletons = remaining_singletons,
+
+     # 5: sizes for each subgroup; including both leaves and internal nodes
      allsgsize = table(assign),
 
-     # 4: Itol output table
+     # 6: Itol output table
 
      itolOutput = majorsubgrouptable,
 
-     # 5: sizes for each subgroup; leaves/tips only
+     # 7: sizes for each subgroup; leaves/tips only
      leafsubgroupsize = table(assign[1:ntips]),
 
-     # 6: stating the number of tips in the tree
-     ntips = ntips,
+     # 8: stating the number of tips in the tree
+     ntips = ntips
+   )
 
-     # 6: Singleton nodes
-     singletons = remaining_singletons)
 
    # subsetting the "membership" to only include tips/leaves
    output$subgroupmems <- output$subgroupmems[1:ntips]

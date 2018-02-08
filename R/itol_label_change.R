@@ -8,29 +8,30 @@
 
 itol_labels_template <- function(tips,table){
 
-Date <- Sys.Date ()
-colnames(table) <- NULL
-outputTable = mat.or.vec(tips +3, 1)    #Blank Output
+Date <- Sys.Date()
+colnames (table) <- NULL
+outputTable = mat.or.vec(tips +3, 1)
 
 #Itol Header Settings
-outputTableHeaderVector <- rbind("LABELS",
+outputTableHeaderVector <- rbind ("LABELS",
                                  "SEPARATOR COMMA",
                                  "DATA"
 )
 
-for(i in 1:3){ #Place headers into Table
+for (i in 1:3){ #Place headers into Table
   outputTable[i] <- outputTableHeaderVector[i,]
 }
 preparingTable = mat.or.vec(tips,2)
 
-for(i in 1:tips){
+for (i in 1:tips){
 
-  preparingTable[i,] <- table[i,c(1,2)] #Take the samples and their major cluster dupicated in two columns
+  #Take the samples and their major cluster dupicated in two columns
+  preparingTable[i,] <- table[i,c(1,2)]
 
 }
 
-
-for(i in 1:nrow(table)){ #With rows of the above table, collapse each row and its elements into one element for export after headers
+#With rows of the above table, collapse each row and its elements into one element for export after headers
+for (i in 1:nrow(table)){
   row = i +3
   outputTable[row] <- paste(preparingTable[i,],collapse=",")
 }
