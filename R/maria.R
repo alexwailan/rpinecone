@@ -382,114 +382,40 @@ maria <- function(tree,thresh,rthreshold){
    # collating variables from above
    output <- list(
 
-     # 1: Assigned subgroup number for each leaf/tip
-     subgroupmems = assign,
-
-     # 2: The major subgroup number for each node
-     majorsubgroupmems = maj_subgroup_assign,
-
-     # 3: Number of Major Subgroups
+     # 1: Number of Major Subgroups
      majorSBno = numbmajorsubgroup,
 
-     # 4: Singleton nodes
+     # 2: Singleton nodes
      singletons = remaining_singletons,
 
-     # 5: sizes for each subgroup; including both leaves and internal nodes
+     # 3: sizes for each subgroup; including both leaves and internal nodes
      allsgsize = table(assign),
 
-     # 6: Itol output table
-
+     # 4: Itol output table
      itolOutput = majorsubgrouptable,
 
-     # 7: sizes for each subgroup; leaves/tips only
-     leafsubgroupsize = table(assign[1:ntips]),
-
-     # 8: stating the number of tips in the tree
+     # 5: stating the number of tips in the tree
      ntips = ntips
    )
-
-
    # subsetting the "membership" to only include tips/leaves
    output$subgroupmems <- output$subgroupmems[1:ntips]
    output$majorsubgroupmems <- output$majorsubgroupmems[1:ntips]
 
+
+   cat("",
+       paste("Number of Isolates on tree: ", ntips),
+       paste("Number of Sub-groups identified: ", sgnum),
+       paste("Number of Major Subgroups identified: ", numbmajorsubgroup),
+       paste("Number of Singletons remain: ", length(remaining_singletons)),
+       sep = "\n")
+
+   #Display Sub-Grouping stats to terminal
+   for (i in 1:numbmajorsubgroup){
+     numbmajorsubgroupmems <- length(which(majorsubgrouptable[, 3] == i))
+     numbmajorsubgroupsgnum <- length(which(sgnum_major_subgroup_list[, 2] == i))
+     cat(paste("Major Sub-Group ", i, "is composed of ", numbmajorsubgroupsgnum, " Sub-Groups & ", numbmajorsubgroupmems, " isolates."), sep = "\n")
+   }
+
    return(output)
 
-
-
-
-  #===========================================================================#
-  #                                                                           #
-  #                        Saving subgrouping results                         #
-  #                                                                           #
-  #===========================================================================#
-
-
-   #
-   # # Compiling all meta data, subgrouping and major sub-groups for output.
-   #
-   # majorsubgrouptable <- mat.or.vec(length(tree$tip.label), 4)
-   #
-   # #Giving column names
-   # colnames(majorsubgrouptable) <- c("Taxa", "Sample.ID", "Sub-group", "Major.Sub-group")
-   #
-   # #Assign the 1st column of said matrix or vector to the name of the tips from the tree
-   # majorsubgrouptable[, 1] <- tree$tip.label
-   #
-   # #matches in majorcluster
-   # filter_lanes <- match(majorsubgrouptable[, 1], Sample.ID[, 1])
-   #
-   # #reordering sample id via tree order
-   # Sample.ID.order <- Sample.ID[filter_lanes, ]
-   #
-   # #Assign the 2nd column of said matrix or vector to cluster it has been assigned
-   # majorsubgrouptable[, 2] <- Sample.ID.order[, 2]
-   #
-   # #Assign the 2nd column of said matrix or vector to cluster it has been assigned
-   # majorsubgrouptable[, 3] <- ans$subgroupmems
-   #
-   # #Assign the 3rd column of said matrix or vector to Major cluster it has been assigned
-   # majorsubgrouptable[, 4] <- ans$majorsubgroupmems
-   #
-   # #store positions/elements in the vector are equal to zero i.e. were not assigned a cluster number
-   # majorzero_elems <- which(majorsubgrouptable[, 3] == 0)
-   #
-   # #Said positions in vector are replaced with "singleton"
-   # majorsubgrouptable[majorzero_elems, 3] <- "singleton_"
-   #
-   # #store positions/elements in the vector have singleton i.e. were not assigned a cluster number
-   # singletonsii <- which(majorsubgrouptable[, 3] == "singleton_")
-   #
-   # #rename each position stated in "ii" with singleton plus a unique number using seq(1 to length of ii, by increments of 1)
-   # majorsubgrouptable[singletonsii, 3] <- paste("singleton_", seq(1, length(singletonsii), 1), sep = "")
-   #
-
-
-  #
-  # } else {
-
-  # }
-  #
-  #
-  # majsubgroupoutput <- paste(thresh, "_SNPs_SB_threshold_", numbmajorsubgroup, "_MajSubgroups_", Date, ".txt", sep = "")
-  #
-  # write.table(majorsubgrouptable, file = majsubgroupoutput, sep = ",", col.names = T, row.names = F, quote = F)
-  #
-  # #===============================================================================================#
-  # #                                                                                                 #
-  # #                              Display Sub-Grouping stats to terminal                             #
-  # #                                                                                                 #
-  # #===============================================================================================#
-  #
-  # cat("", paste("Number of Sub-groups identified: ", sgnum),
-  #     paste("Number of Major Subgroups identified: ", length(major_subgroup)),
-  #     paste("Number of Singletons remain: ", length(remaining_singletons)),
-  #     sep = "\n")
-  #
-  # #Display number of samples in major clusters and cluster in each major cluster
-  # for (i in 1:numbmajorsubgroup){
-  #   numbmajorsubgroupmems <- length(which(majorsubgrouptable[, 3] == i))
-  #   numbmajorsubgroupsgnum <- length(which(sgnum_major_subgroup_list[, 2] == i))
-  #   cat(paste("Major Sub-Group ", i, "is composed of ", numbmajorsubgroupsgnum, " Sub-Groups & ", numbmajorsubgroupmems, " isolates."), sep = "\n")
-  # }
 }
