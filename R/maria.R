@@ -30,7 +30,6 @@ maria <- function(tree,thresh,rthreshold){
   # Renaming the node labels; at a sequence from 1 to (number of nodes in tree), at increments of 1.
   tree$node.label <- paste("Node", seq(1, tree$Nnode, 1), sep = "_")
 
-
   #===========================================================================#
   #                                                                           #
   #                  Define variables for Sub-grouping                        #
@@ -69,8 +68,6 @@ maria <- function(tree,thresh,rthreshold){
       node <- dfs$order[i]
 
       # Skip leaves/tips
-      #If the number of the "node" is less than ntips+1 it is actually a leaf/tip
-      #i.e. phytools stores tips of trees as 1:n (n = no. of tips) then nodes as n+1:n+m (m = no. of nodes)
       if (node < ntips + 1) {
         cat(paste(tree$tip.label[node], " skipped as this is a leaf."), sep = "\n")
          next
@@ -79,14 +76,12 @@ maria <- function(tree,thresh,rthreshold){
         cat("", paste(tree$node.label[node - ntips], " will be investigated."), sep = "\n")
       }
 
-      #Assign a subgroup number containing the said node & all the tips connected in the 'out' direction from the root
+      #Node must no be assigned to a Sub-Group
       if (assign[node] <= 0){
 
-        #Said node becomes the root; dfs will search out and notes the order of "nodes"
-        #(which includes internal nodes + tips); display only the $order and store it
+        #Need to generate a subree for sub-grouping analysis
         subtree <- graph.dfs(igraph.tree, node, neimode = "out", unreachable = FALSE)$order
 
-        #Checks within the igraph.vs called subtree which values do not equal to NA and stores them under subtree i.e. remove all NAs
         subtree <- subtree[!is.na(subtree)]
 
         #Define maximum distance amongst all tips from said node
@@ -95,35 +90,30 @@ maria <- function(tree,thresh,rthreshold){
         #Define the tips connected to node at zero distance
         tips_0_dist_node <- tips_node_zero_dist(node, subtree, igraph.tree, tree, ntips)
 
-        #Logical sub-grouping numbering; composed of  two parameters - threshold && zero distance
-
-        #Logical: tip distances from node below or equal to threshold?
+        #Logical sub-grouping numbering; composed of two parameters - threshold && zero distance
         if (node_tips_max_dist <= thresh){
 
-          #Tick up the clustering number
           sgnum <- sgnum + 1
 
-          #Record/assign the cluster number to the "assign" vector in the positions specified by the "subtree" variable
           assign[subtree] <- sgnum
 
-          #Display that a Sub-Group has been identified and assigned
           cat(paste("Threhold met - Sub-Group Number assigned: ", sgnum), sep = "\n")
 
         } else
           if (sum(tips_0_dist_node) > 0 &&
               tips_0_dist_node[1] != sum(tips_0_dist_node)){
-          #If said internal node has downstream tips over the declared SNP threshold assess tips directly connected to said node
-          #Assign Sub-group if there are tips are zero distance to node; Must not be a singleton
+
+          # Some internal nodes have downstream tips with a distance
+          # over declared SNP threshold,
+          # however have tips in zero distance to node
+          # Assign these tips as  a Sub-Group
 
           sgnum <- sgnum + 1
 
-          #assign sgnum to tips at node in zero distance
           assign[tips_0_dist_node] <- sgnum
 
-          #assign sgnum to the node
           assign[node] <- sgnum
 
-          #Display that a Sub-Group has been identified and assigned
           cat(paste("Internal sub-group detected - Sub-group number assigned: ", sgnum), sep = "\n")
 
         }
@@ -281,12 +271,8 @@ maria <- function(tree,thresh,rthreshold){
 
   }
 
-  # Step 2: Create a basis to compare the ancestor nodes of each singleton with those of each sgnum
+  # Step 2: Create a basis to compare the ancestor nodes of each singleton with those of each Sub-group
 
-  # Pairwise comparison combinations are based per singleton against all sgnums;
-  # ancestor nodes of said singleton will be listed in var2, in combination with the number sgnums and their respective ancestor nodes
-  # i.e each singleton comparison is in a set of rows the size the number of sgnums identified
-  # e.g. first singleton is row 1 to row(no of cums), second singleton is the next set of rows after to the number of sgnums
   result.df <- expand.grid(sg_intersect_list, singleton_ancestor_list)
 
   # for each singleton retrieve the "block" of said singleton + sgnum combinations
@@ -301,7 +287,7 @@ maria <- function(tree,thresh,rthreshold){
     # x is the sgnum number
     for (x in 1:nrow(single_block)){
 
-      # Determine the intersect for a said row i.e. Singleton vs sgnum(which is row number)
+      # Determine the intersect for a said row
       int <- Reduce(intersect, lapply(single_block, "[[", x))
 
       # Storing how many internal nodes of a Sub-Group intersect with said singleton over or equal to set Relibility Threshold
@@ -311,18 +297,14 @@ maria <- function(tree,thresh,rthreshold){
 
       }
 
-      # which sgnum overlap  equal or more in internal nodes with said singleton no
+      # which Sub-groups overlap in internal nodes with said singleton no equal or more to set threshold
       sgnum_for_singleton_int <- which(singleton_sgnum_length >= rthreshold)
 
-      # singleton needs to have intersected with a sgnum && the sgnum needs to be have a major cluster to call it
+      # singleton needs to have intersected with a Sub-Group && the Sub-Group needs to be declared under a Major Sub-Group
       if (length(sgnum_for_singleton_int) > 0 && any(sgnum_major_subgroup_list[, 1] %in% sgnum_for_singleton_int) ){
 
-        # given the list of each sgnum and their corresponding major Sub-Group - retrieve corresponding major Sub-group
-        majsb_of_singleton <- sgnum_major_subgroup_list[
-          # rows which desired sgnums
-          which(sgnum_major_subgroup_list[, 1] %in% sgnum_for_singleton_int),
-          2 # 2nd column is where the major cluster is stored
-                                                        ]
+        # Retrieve corresponding Major Sub-group
+        majsb_of_singleton <- sgnum_major_subgroup_list[ which(sgnum_major_subgroup_list[, 1] %in% sgnum_for_singleton_int), 2]
 
         # If a singleton has a unique major cluster, store it in the major cluster assigning vector
         # results are a vector calling a Major cluster multiple times i.e. singleton can have same ancestral nodes with multiple sgnums
@@ -330,7 +312,7 @@ maria <- function(tree,thresh,rthreshold){
         # check if major cluster is unique, should have only one calling of a major cluster number.
         if (length(unique(majsb_of_singleton)) == 1){
 
-          # assign the major cluster to the singletons in maj_subgroup_assign
+          # assign the major cluster to the singletons
           majclust <- unique(majsb_of_singleton)
 
           # convert singleton number into the actual singleton tip number
@@ -339,7 +321,7 @@ maria <- function(tree,thresh,rthreshold){
           # assign the major cluster identified to the singleton
           maj_subgroup_assign[singleton_for_assign] <- majclust
 
-        }else{
+        } else {
           cat(paste("Error: Two Major Subgroups identified for a singleton ", unique(majsb_of_singleton)), sep = "\n")
         }
 
@@ -352,31 +334,24 @@ maria <- function(tree,thresh,rthreshold){
   # Number of singletons after sub-grouping
   remaining_singletons <- which(assign[1:ntips] == 0)
 
-
   majorsubgrouptable <- mat.or.vec(length(tree$tip.label), 3)
 
-  #Giving column names
+  # Collating the tip labels and their respective Sub-Group and Major Sub-Group
   colnames(majorsubgrouptable) <- c("Taxa", "Sub-group", "Major.Sub-group")
 
-  #Assign the 1st column of said matrix or vector to the name of the tips from the tree
   majorsubgrouptable[, 1] <- tree$tip.label
 
-  #Assign the 2nd column of said matrix or vector to cluster it has been assigned
   majorsubgrouptable[, 2] <- assign[1:ntips]
 
-  #Assign the 3rd column of said matrix or vector to Major cluster it has been assigned
   majorsubgrouptable[, 3] <- maj_subgroup_assign[1:ntips]
 
-  #store positions/elements in the vector are equal to zero i.e. were not assigned a cluster number
   majorzero_elems <- which(majorsubgrouptable[, 2] == 0)
 
-  #Said positions in vector are replaced with "singleton"
+  # Labeling Singletons
   majorsubgrouptable[majorzero_elems, 2] <- "singleton_"
 
-  #store positions/elements in the vector have singleton i.e. were not assigned a cluster number
   singletonsii <- which(majorsubgrouptable[, 2] == "singleton_")
 
-  #rename each position stated in "ii" with singleton plus a unique number using seq(1 to length of ii, by increments of 1)
   majorsubgrouptable[singletonsii, 2] <- paste("singleton_", seq(1, length(singletonsii), 1), sep = "")
 
    # collating variables from above
@@ -388,19 +363,12 @@ maria <- function(tree,thresh,rthreshold){
      # 2: Singleton nodes
      singletons = remaining_singletons,
 
-     # 3: sizes for each subgroup; including both leaves and internal nodes
-     allsgsize = table(assign),
-
-     # 4: Itol output table
+     # 3: Itol output table
      itolOutput = majorsubgrouptable,
 
-     # 5: stating the number of tips in the tree
+     # 4: stating the number of tips in the tree
      ntips = ntips
    )
-   # subsetting the "membership" to only include tips/leaves
-   output$subgroupmems <- output$subgroupmems[1:ntips]
-   output$majorsubgroupmems <- output$majorsubgroupmems[1:ntips]
-
 
    cat("",
        paste("Number of Isolates on tree: ", ntips),
