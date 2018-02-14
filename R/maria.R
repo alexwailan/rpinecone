@@ -128,17 +128,16 @@ maria <- function(tree,thresh,rthreshold){
   #                                                                           #
   #===========================================================================#
 
-  iteration <- 0
   sg_intersect_list <- list()
 
   for (i in 1:sgnum){
-    #which elements are found for a sgnum
+    #for each SG retrieve relevant indexes
     sgnum_elements <- which(assign == i)
     sgnum_elements_tips <- sgnum_elements[which(sgnum_elements < ntips + 1)]
     iteration <- 0
     sg_element_ancestors_list <- list()
 
-    #Retrieve the internal nodes of each member of said subgroup
+    #Retrieve the internal nodes of each member of said SG
     for (x in sgnum_elements_tips){
 
       #generate a list of each SG element
@@ -156,7 +155,7 @@ maria <- function(tree,thresh,rthreshold){
     sg_intersect_list[i] <- list(sub_intersect)
   }
 
-  # combinations in columns
+  # Combinations in columns
   combinations <- combn(length(sg_intersect_list), 2)
 
   # Take the ancestor nodes of each Sub-Group and setup a paired-wise comparison  - list of lists of the combinations
@@ -164,8 +163,6 @@ maria <- function(tree,thresh,rthreshold){
 
   # Pair-wise Comparison Function! Intersect the list elements - find the intersect &  the length
   out <- lapply( ll, function(x) length( intersect( x[[1]], x[[2]] ) ) )
-
-  # which Pair-wise comparisons have more than two internal nodes
 
   # Declare an empty variable to store wanted comparisons
   major_subgroup_intersect <- list()
@@ -206,7 +203,6 @@ maria <- function(tree,thresh,rthreshold){
   for (x in 1:length(major_subgroup)){
 
     maj_subgroup_mems <- NULL
-
 
     # Within the Major Sub-Group, call the tips of each Sub-Group and store them in "maj_subgroup_mems"
     for (i in major_subgroup[[x]]){
