@@ -130,6 +130,8 @@ maria <- function(tree,thresh,rthreshold){
 
   sg_intersect_list <- list()
 
+  treeNnodes <- tree$Nnode
+
   for (i in 1:sgnum){
     #for each SG retrieve relevant indexes
     sgnum_elements <- which(assign == i)
