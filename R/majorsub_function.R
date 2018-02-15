@@ -1,4 +1,4 @@
-#' Major Sub-group
+#' Major Subs
 #'
 #' Function to identify major sub-groups composed of identified sub-groups
 #' Singletons which may not have a sub-group can also be inlcuded in
@@ -20,8 +20,7 @@
 #                                                                           #
 #===========================================================================#
 
-
-majorsub <- function(sgnum, tree, assign, ntips,  rthreshold, treeNnodes){
+majorsub <- function(sgnum, tree, assign, ntips, rthreshold, treeNnodes){
 
   #treeNnodes is ode - need to fix
   sg_intersect_list <- list()
@@ -74,7 +73,8 @@ majorsub <- function(sgnum, tree, assign, ntips,  rthreshold, treeNnodes){
 
   }
 
-  # Combination Function! need to combine lists with overlapping sgnum; Goal: If there are overlapping numbers in differents lists combine them
+  # Combination Function! need to combine lists with overlapping sgnum;
+  # Goal: If there are overlapping numbers in differents lists combine them
   for (i in seq_along(major_subgroup_intersect)
        [-length(major_subgroup_intersect)]){
     if (length(intersect(major_subgroup_intersect[[i]],
@@ -89,9 +89,6 @@ majorsub <- function(sgnum, tree, assign, ntips,  rthreshold, treeNnodes){
 
   # Take only the rows with something in it - The major subgroup list is then created
   major_subgroup <- Filter(function(x) length(x) > 0, major_subgroup_intersect)
-
-  # Number of Major SubGroup
-  numbmajorsubgroup <- length(major_subgroup)
 
   # Retrieving the SubGroup numbers for each Major SubGroup,
   # Retrieve the SubGroup's tips and storing them in a vector according to the tree
@@ -223,6 +220,13 @@ majorsub <- function(sgnum, tree, assign, ntips,  rthreshold, treeNnodes){
     }
 
   }
+  output <- list(
 
-  return(maj_subgroup_assign)
+    maj_subgroup_assign = maj_subgroup_assign,
+
+    majorsublist = sgnum_major_subgroup_list
+
+  )
+
+  return(output)
 }

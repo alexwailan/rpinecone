@@ -39,8 +39,3 @@ itol_labels_template(output$ntips,output$itolOutput)
 
 itol_major_SB_binary_template(output$majorSBno,output$ntips,output$itolOutput)
 
-# test_check("maria")
-# test_check("get_path_distance_function")
-# test_check("load_tree_function")
-
-
