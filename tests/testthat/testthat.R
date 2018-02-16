@@ -35,7 +35,7 @@ sample_id_file <- file.path("inst",
 
 output <- maria(tree,2,3)
 
-itol_labels_template(output$ntips,output$itolOutput)
+itol_labels_template(output)
 
-itol_major_SB_binary_template(output$majorSBno,output$ntips,output$itolOutput)
+itol_major_SB_binary_template(output)
 

@@ -10,6 +10,7 @@
 #' get_path_distance()
 
 get_path_distance <- function(graph_tree, root, node, input_tree){
+
   path <- shortest_paths(graph_tree,
                          root,
                          node,

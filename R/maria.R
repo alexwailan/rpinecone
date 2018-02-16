@@ -21,7 +21,7 @@ maria <- function(tree,thresh,rthreshold){
 
   tree <- read.newick(tree)
 
-  # Resolving dichotomies by deleting all branches smaller than 0.5 i.e. zero SNPs and collapses the corresponding dichotomies into a multichotomy.
+  # Resolving dichotomies into a multichotomies.
   tree <- di2multi(tree, 0.5)
   tree_name <- paste("NewickTreefile_", Date, ".tre")
   write.tree(tree, file = tree_name) # Output the new tree.
@@ -29,7 +29,7 @@ maria <- function(tree,thresh,rthreshold){
   # Display Number of Taxa in Tree.
   cat("\t", length(tree$tip.label), " taxa found from phylogenetic tree\n", sep = "")
 
-  # Renaming the node labels; at a sequence from 1 to (number of nodes in tree), at increments of 1.
+  # Renaming the node labels.
   tree$node.label <- paste("Node", seq(1, tree$Nnode, 1), sep = "_")
 
   #===========================================================================#
@@ -41,11 +41,11 @@ maria <- function(tree,thresh,rthreshold){
   # Number of tips
   ntips <- Ntip(tree)
 
-  # convert tree in igraph form - Takes a 2 column matrix edge list, where each row is an existing edge
+  # Convert tree in igraph form - Takes a 2 column matrix edge list
   igraph.tree <- graph.edgelist(tree$edge)
 
-  # Depth First Search traverses a graph, begins at a "root" vertex and tries to go quickly as far from as possible
-  # Order - return the DFS ordering of the vertices; dist - return the distance from the root of the search tree
+
+  # Perform Depth First Search on graph
   dfs <- graph.dfs(igraph.tree,
                    root = ntips + 1,
                    neimode = "out",
@@ -68,9 +68,9 @@ maria <- function(tree,thresh,rthreshold){
   #                                                                           #
   #===========================================================================#
 
-  maj_subgrouping <- majorsub(sgnum, tree, assign, rthreshold)
+  majSubs <- majorsub(sgnum, tree, assign, rthreshold)
 
-  numbmajorsubgroup <- max(maj_subgrouping$maj_subgroup_assign)
+  numbmajorsubgroup <- max(majSubs$maj_subgroup_assign)
 
   #===========================================================================#
   #                                                                           #
@@ -81,8 +81,7 @@ maria <- function(tree,thresh,rthreshold){
   # Number of singletons after sub-grouping
   remaining_singletons <- which(assign[1:ntips] == 0)
 
-  data <- collectdata(tree,assign,maj_subgrouping)
-
+  data <- collectdata(tree,assign,majSubs)
 
    # collating variables from above
    output <- list(
@@ -96,7 +95,7 @@ maria <- function(tree,thresh,rthreshold){
      # 3: Itol output table
      itolOutput = data,
 
-     # 4: stating the number of tips in the tree
+     # 4: Stating the number of tips in the tree
      ntips = ntips
    )
 
@@ -110,8 +109,11 @@ maria <- function(tree,thresh,rthreshold){
    #Display Sub-Grouping stats to terminal
    for (i in 1:numbmajorsubgroup){
      numbmajorsubgroupmems <- length(which(data[, 3] == i))
-     numbmajorsubgroupsgnum <- length(which(maj_subgrouping$majorsublist[, 2] == i))
-     cat(paste("Major Sub-Group ", i, "is composed of ", numbmajorsubgroupsgnum, " Sub-Groups & ", numbmajorsubgroupmems, " isolates."), sep = "\n")
+     numbmajorsubgroupsgnum <- length(which(majSubs$majorsublist[, 2] == i))
+     cat(paste("Major Sub-Group ", i,
+               "is composed of ", numbmajorsubgroupsgnum,
+               " Sub-Groups & ", numbmajorsubgroupmems,
+               " isolates."), sep = "\n")
    }
 
    return(output)
