@@ -85,7 +85,6 @@ maria <- function(tree,thresh,rthreshold){
 
    # collating variables from above
    output <- list(
-
      # 1: Number of Major Subgroups
      majorSBno = numbmajorsubgroup,
 
