@@ -5,7 +5,7 @@
 #' major sub-group
 #'
 #'@param sgnum Number of Sub-groups identified.
-#'@param tree The phylogenetic tree.
+#'@param tree The rooted phylogenetic tree.
 #'@param assign Vector of Sub-group numbers corresponding to tips on a tree.
 #'@param ntips Number of tips on the phylogenetic tree.
 #'@param rthreshold Number of internal nodes to the root each sub-group must have
@@ -20,9 +20,10 @@
 #                                                                           #
 #===========================================================================#
 
-majorsub <- function(sgnum, tree, assign, ntips, rthreshold, treeNnodes){
+majorsub <- function(sgnum, tree, assign, rthreshold){
 
-  #treeNnodes is ode - need to fix
+  ntips <- Ntip(tree)
+  treeNnodes <- tree$Nnode
   sg_intersect_list <- list()
 
   for (i in 1:sgnum){

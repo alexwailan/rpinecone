@@ -41,8 +41,6 @@ maria <- function(tree,thresh,rthreshold){
   # Number of tips
   ntips <- Ntip(tree)
 
-
-
   # convert tree in igraph form - Takes a 2 column matrix edge list, where each row is an existing edge
   igraph.tree <- graph.edgelist(tree$edge)
 
@@ -60,7 +58,7 @@ maria <- function(tree,thresh,rthreshold){
   #                                                                           #
   #===========================================================================#
 
-  assign <- subgrp(dfs, tree, assign, ntips, igraph.tree, thresh)
+  assign <- subgrp(dfs, tree, assign, igraph.tree, thresh)
 
   sgnum <- max(assign)
 
@@ -70,14 +68,9 @@ maria <- function(tree,thresh,rthreshold){
   #                                                                           #
   #===========================================================================#
 
-  sg_intersect_list <- list()
-
-  treeNnodes <- tree$Nnode
-
-  maj_subgrouping <- majorsub(sgnum, tree, assign, ntips, rthreshold, treeNnodes)
+  maj_subgrouping <- majorsub(sgnum, tree, assign, rthreshold)
 
   numbmajorsubgroup <- max(maj_subgrouping$maj_subgroup_assign)
-
 
   #===========================================================================#
   #                                                                           #
@@ -88,25 +81,8 @@ maria <- function(tree,thresh,rthreshold){
   # Number of singletons after sub-grouping
   remaining_singletons <- which(assign[1:ntips] == 0)
 
-  majorsubgrouptable <- mat.or.vec(length(tree$tip.label), 3)
+  data <- collectdata(tree,assign,maj_subgrouping)
 
-  # Collating the tip labels and their respective Sub-Group and Major Sub-Group
-  colnames(majorsubgrouptable) <- c("Taxa", "Sub-group", "Major.Sub-group")
-
-  majorsubgrouptable[, 1] <- tree$tip.label
-
-  majorsubgrouptable[, 2] <- assign[1:ntips]
-
-  majorsubgrouptable[, 3] <- maj_subgrouping$maj_subgroup_assign[1:ntips]
-
-  majorzero_elems <- which(majorsubgrouptable[, 2] == 0)
-
-  # Labeling Singletons
-  majorsubgrouptable[majorzero_elems, 2] <- "singleton_"
-
-  singletonsii <- which(majorsubgrouptable[, 2] == "singleton_")
-
-  majorsubgrouptable[singletonsii, 2] <- paste("singleton_", seq(1, length(singletonsii), 1), sep = "")
 
    # collating variables from above
    output <- list(
@@ -118,7 +94,7 @@ maria <- function(tree,thresh,rthreshold){
      singletons = remaining_singletons,
 
      # 3: Itol output table
-     itolOutput = majorsubgrouptable,
+     itolOutput = data,
 
      # 4: stating the number of tips in the tree
      ntips = ntips
@@ -133,7 +109,7 @@ maria <- function(tree,thresh,rthreshold){
 
    #Display Sub-Grouping stats to terminal
    for (i in 1:numbmajorsubgroup){
-     numbmajorsubgroupmems <- length(which(majorsubgrouptable[, 3] == i))
+     numbmajorsubgroupmems <- length(which(data[, 3] == i))
      numbmajorsubgroupsgnum <- length(which(maj_subgrouping$majorsublist[, 2] == i))
      cat(paste("Major Sub-Group ", i, "is composed of ", numbmajorsubgroupsgnum, " Sub-Groups & ", numbmajorsubgroupmems, " isolates."), sep = "\n")
    }
