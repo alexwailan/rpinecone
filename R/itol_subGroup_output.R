@@ -1,34 +1,21 @@
-#' itol_Sub-Group_binary_template
+#' itol_subGroup_output
 #'
-#' Function to output the results of maria to itol
-#' This will change your tip labels to the sub-group number of the isolate
-#' @param input output from maria
+#' Function to output the results of maria to itol.
+#' This will change your tip labels to the sub-group number of the isolate.
+#' @param input Output list from main maria function.
 #' @import RColorBrewer
 #'
+#' itol_subGroup_output()
 
 
-itol_subGroup_binary_template <- function(input){
+itol_subGroup_output <- function(input){
+
   tips <- input$ntips
   table <- input$itolOutput
   SGNo <- input$SGNo
 
   Date <- Sys.Date ()
   colnames (table) <- NULL
-  outputTable = mat.or.vec(tips + 9, 1)
-
-  #Itol Header Settings
-  outputTableHeaderVector <- rbind("DATASET_COLORSTRIP",
-                                   "SEPARATOR COMMA",
-                                   "DATASET_LABEL,Sub-Group",
-                                   "COLOR_BRANCHES,0",
-                                   "LEGEND_TITLE,Sub-Group",
-                                   "LEGEND_SHAPES",
-                                   "LEGEND_COLORS",
-                                   "LEGEND_LABELS",
-                                   "DATA")
-  for (i in 1:9){ #Place headers into Table
-    outputTable[i] <- outputTableHeaderVector[i, ]
-  }
 
   preparingTable = mat.or.vec(tips, 3)
 
@@ -44,6 +31,23 @@ itol_subGroup_binary_template <- function(input){
 
   preparingTable <- preparingTable[-grep('singleton', preparingTable[, 2]), ]
 
+  outputTable = mat.or.vec(nrow(preparingTable) + 9, 1)
+
+
+  #Itol Header Settings
+  outputTableHeaderVector <- rbind("DATASET_COLORSTRIP",
+                                   "SEPARATOR COMMA",
+                                   "DATASET_LABEL,Sub-Group",
+                                   "COLOR_BRANCHES,0",
+                                   "LEGEND_TITLE,Sub-Group",
+                                   "LEGEND_SHAPES",
+                                   "LEGEND_COLORS",
+                                   "LEGEND_LABELS",
+                                   "DATA")
+  for (i in 1:9){ #Place headers into Table
+    outputTable[i] <- outputTableHeaderVector[i, ]
+  }
+
 
   #With rows of the above table, collapse each row and its elements into one element for export after headers
   for (i in 1:nrow(preparingTable)){
@@ -53,7 +57,5 @@ itol_subGroup_binary_template <- function(input){
 
   outputname <- paste("subgroups_itol_output_", Date, ".txt", sep = "")
   write.table(outputTable,file=outputname,sep = "\t",row.names = FALSE, col.names = FALSE,quote = FALSE)
-  print("ASDFASFDSDFADSD")
 
 }
-

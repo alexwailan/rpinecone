@@ -15,7 +15,24 @@ itol_major_SB_binary_template <- function(input){
 
   Date <- Sys.Date ()
   colnames (table) <- NULL
-  outputTable = mat.or.vec(tips + 9, 1)
+
+
+  n <- majSBno
+  preparingTable = mat.or.vec(tips, 3)
+
+  for(i in 1:tips){
+    preparingTable[i, ] <- table[i, c(1, 3, 3)] #Take the samples and their major cluster dupicated in two columns
+  }
+
+  for(j in 1:n){ #If less than 12 Major Groups - Generate Qualitative Colours and replace the column 2 with a colour for each Major Sub-group
+    brew_list <- brewer.pal(12, "Paired")
+    colour_list <- colorRampPalette(brewer.pal(12, "Paired"))(n)
+    preparingTable[, 2][preparingTable[, 2]==j] <- colour_list[j] #For said number, check in the second column, which element said number is equal to; for those elements replace with colour HEX code
+  }
+
+  preparingTable <- preparingTable[-grep('0', preparingTable[, 2]), ]
+
+  outputTable = mat.or.vec(nrow(preparingTable) + 9, 1)
 
   #Itol Header Settings
   outputTableHeaderVector <- rbind("DATASET_COLORSTRIP",
@@ -30,24 +47,11 @@ itol_major_SB_binary_template <- function(input){
   for (i in 1:9){ #Place headers into Table
     outputTable[i] <- outputTableHeaderVector[i, ]
   }
-  n <- majSBno
-  preparingTable = mat.or.vec(tips, 3)
-  if (n <= 12){
-    for(i in 1:tips){
-      preparingTable[i, ] <- table[i, c(1, 3, 3)] #Take the samples and their major cluster dupicated in two columns
-    }
-    for(i in 1:n){ #If less than 12 Major Groups - Generate Qualitative Colours and replace the column 2 with a colour for each Major Sub-group
-      colour_list <- brewer.pal(n, "Paired")
-
-      preparingTable[, 2][preparingTable[, 2]==i] <- colour_list[i] #For said number, check in the second column, which element said number is equal to; for those elements replace with colour HEX code
-    }
-  }
 
   #With rows of the above table, collapse each row and its elements into one element for export after headers
-  for (i in 1:nrow(table)){
+  for (i in 1:nrow(preparingTable)){
     row = i + 9
     outputTable[row] <- paste(preparingTable[i,],collapse=",")
-    print(outputTable[i + 9])
   }
 
   outputname <- paste("major_subgroups_itol_output_", Date, ".txt", sep = "")

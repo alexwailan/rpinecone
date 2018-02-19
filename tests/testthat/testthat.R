@@ -39,3 +39,6 @@ itol_labels_template(output)
 
 itol_major_SB_binary_template(output)
 
+itol_subGroup_binary_template(output)
+
+

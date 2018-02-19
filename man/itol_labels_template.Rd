@@ -4,12 +4,10 @@
 \alias{itol_labels_template}
 \title{itol_labels_template}
 \usage{
-itol_labels_template(tips, table)
+itol_labels_template(input)
 }
 \arguments{
-\item{tips}{number of tips on the phylogenetic tree}
-
-\item{table}{Table output from maria}
+\item{input}{output from maria}
 }
 \description{
 Function to output the results of maria to itol
