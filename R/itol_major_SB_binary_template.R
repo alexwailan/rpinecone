@@ -1,0 +1,56 @@
+#' itol_major_SB_binary_template
+#'
+#' Function to output the results of maria to itol
+#' This will change your tip labels to the sub-group number of the isolate
+#' @param input output from maria
+#' @import RColorBrewer
+#'
+
+
+itol_major_SB_binary_template <- function(input){
+
+  majSBno <- input$majorSBno
+  tips <- input$ntips
+  table <- input$itolOutput
+
+  Date <- Sys.Date ()
+  colnames (table) <- NULL
+  outputTable = mat.or.vec(tips + 9, 1)
+
+  #Itol Header Settings
+  outputTableHeaderVector <- rbind("DATASET_COLORSTRIP",
+                                   "SEPARATOR COMMA",
+                                   "DATASET_LABEL,Major Sub-Group",
+                                   "COLOR_BRANCHES,0",
+                                   "LEGEND_TITLE,Major Sub-Group",
+                                   "LEGEND_SHAPES",
+                                   "LEGEND_COLORS",
+                                   "LEGEND_LABELS",
+                                   "DATA")
+  for (i in 1:9){ #Place headers into Table
+    outputTable[i] <- outputTableHeaderVector[i, ]
+  }
+  n <- majSBno
+  preparingTable = mat.or.vec(tips, 3)
+  if (n <= 12){
+    for(i in 1:tips){
+      preparingTable[i, ] <- table[i, c(1, 3, 3)] #Take the samples and their major cluster dupicated in two columns
+    }
+    for(i in 1:n){ #If less than 12 Major Groups - Generate Qualitative Colours and replace the column 2 with a colour for each Major Sub-group
+      colour_list <- brewer.pal(n, "Paired")
+
+      preparingTable[, 2][preparingTable[, 2]==i] <- colour_list[i] #For said number, check in the second column, which element said number is equal to; for those elements replace with colour HEX code
+    }
+  }
+
+  #With rows of the above table, collapse each row and its elements into one element for export after headers
+  for (i in 1:nrow(table)){
+    row = i + 9
+    outputTable[row] <- paste(preparingTable[i,],collapse=",")
+    print(outputTable[i + 9])
+  }
+
+  outputname <- paste("major_subgroups_itol_output_", Date, ".txt", sep = "")
+  write.table(outputTable,file=outputname,sep = "\t",row.names = FALSE, col.names = FALSE,quote = FALSE)
+
+}

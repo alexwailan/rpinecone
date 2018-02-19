@@ -2,8 +2,7 @@
 #'
 #' Function to output the results of maria to itol
 #' This will change your tip labels to the sub-group number of the isolate
-#' @param tips number of tips on the phylogenetic tree
-#' @param table Table output from maria
+#' @param input output from maria
 #'
 
 itol_labels_template <- function(input){

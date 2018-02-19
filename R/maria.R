@@ -85,16 +85,21 @@ maria <- function(tree,thresh,rthreshold){
 
    # collating variables from above
    output <- list(
-     # 1: Number of Major Subgroups
+
+     # 1: Number of Subgroups Identified
+
+     SGNo = sgnum,
+
+     # 2: Number of Major Subgroups
      majorSBno = numbmajorsubgroup,
 
-     # 2: Singleton nodes
+     # 3: Singleton nodes
      singletons = remaining_singletons,
 
-     # 3: Itol output table
+     # 4: Itol output table
      itolOutput = data,
 
-     # 4: Stating the number of tips in the tree
+     # 5: Stating the number of tips in the tree
      ntips = ntips
    )
 
