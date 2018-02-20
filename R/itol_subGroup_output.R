@@ -1,12 +1,9 @@
-#' itol_subGroup_output
+#' Colourstrip Itol Output of Sub-groups.
 #'
 #' Function to output the results of maria to itol.
 #' This will change your tip labels to the sub-group number of the isolate.
 #' @param input Output list from main maria function.
 #' @import RColorBrewer
-#'
-#' itol_subGroup_output()
-
 
 itol_subGroup_output <- function(input){
 

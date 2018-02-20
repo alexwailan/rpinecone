@@ -2,7 +2,7 @@
 % Please edit documentation in R/itol_subGroup_output.R
 \name{itol_subGroup_output}
 \alias{itol_subGroup_output}
-\title{itol_subGroup_output}
+\title{Itol Output Sub-groups.}
 \usage{
 itol_subGroup_output(input)
 }

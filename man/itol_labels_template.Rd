@@ -2,7 +2,7 @@
 % Please edit documentation in R/itol_label_change.R
 \name{itol_labels_template}
 \alias{itol_labels_template}
-\title{itol_labels_template}
+\title{Label change Itol Output for Sub-Groups.}
 \usage{
 itol_labels_template(input)
 }

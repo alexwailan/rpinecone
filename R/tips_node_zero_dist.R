@@ -1,4 +1,4 @@
-#' tips_node_zero_dist
+#' Node to tips zero distance.
 #'
 #' Identify tips within zero distance of internal node
 #' @param subtree Subtree that is made by the main script
@@ -6,8 +6,6 @@
 #' @param node that is the root of the subtree
 #' @param tree Newick formatted ACCTRANS tree
 #' @param ntips Number of isolates on the phylogenetic tree
-#' tips_node_zero_dist()
-#'
 
 tips_node_zero_dist <- function(node, subtree, igraph.tree, tree, ntips){
 

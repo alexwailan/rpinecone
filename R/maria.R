@@ -11,8 +11,7 @@
 #' @import BMhyd
 #' @import phangorn
 #' @import phytools
-#'
-#' maria()
+
 
 maria <- function(tree,thresh,rthreshold){
 

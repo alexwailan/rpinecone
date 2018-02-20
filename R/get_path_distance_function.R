@@ -1,13 +1,14 @@
-#' Get the distance of a path
+#' Get the distance of a path on tree in graph form.
 #'
-#' This function returns the path distance between node and tip on a rooted tree, in a root to tip direction.
-#' @param graph_tree A rooted tree of newick format, converted into graph form by igraph.
+#' This function returns the path distance between
+#' node and tip on a rooted tree, in a root to tip direction.
+#' @param graph_tree A rooted tree of newick format, converted
+#' into graph form by igraph.
 #' @param root A node in the graph you want to begin the path.
 #' @param node Target node.
 #' @param input_tree A rooted newick tree - class "phylo".
 #' @import igraph
 #' @return The SNP distance between given root and node.
-#' get_path_distance()
 
 get_path_distance <- function(graph_tree, root, node, input_tree){
 

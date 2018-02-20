@@ -2,7 +2,7 @@
 % Please edit documentation in R/subgrp_function.R
 \name{subgrp}
 \alias{subgrp}
-\title{Subgrp}
+\title{Sub-group isolates on a phyologentic tree.}
 \usage{
 subgrp(dfs, tree, assign, igraph.tree, thresh)
 }
@@ -15,12 +15,11 @@ subgrp(dfs, tree, assign, igraph.tree, thresh)
 
 \item{igraph.tree}{Phylogenetic tree converted into a graph}
 
-\item{thresh}{SNP threshold for sub-group isolates on the phylogentic tree.
-
-subgrp()}
+\item{thresh}{SNP threshold for sub-group isolates on the phylogentic tree.}
 
 \item{ntips}{Number of tips on the phylogenetic tree.}
 }
 \description{
-Function to assign sub-groups to isolates according to the structure of a rooted tree
+Function to assign sub-groups to isolates according to the
+structure of a rooted tree.
 }

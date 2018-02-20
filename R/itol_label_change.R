@@ -1,4 +1,4 @@
-#' itol_labels_template
+#' Label change Itol Output for Sub-Groups.
 #'
 #' Function to output the results of maria to itol
 #' This will change your tip labels to the sub-group number of the isolate

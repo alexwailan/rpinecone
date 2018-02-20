@@ -2,7 +2,7 @@
 % Please edit documentation in R/itol_major_SB_output.R
 \name{itol_major_SB_output}
 \alias{itol_major_SB_output}
-\title{itol_major_SB_output}
+\title{Colourstrip Itol Output Major sub-groups.}
 \usage{
 itol_major_SB_output(input)
 }

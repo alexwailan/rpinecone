@@ -1,6 +1,7 @@
-#' Subgrp
+#' Sub-group isolates on a phyologentic tree.
 #'
-#' Function to assign sub-groups to isolates according to the structure of a rooted tree
+#' Function to assign sub-groups to isolates according to the
+#' structure of a rooted tree.
 #'
 #'@param dfs The depth-first search performed on the igraph tree.
 #'@param tree The rooted phylogenetic tree.
@@ -8,8 +9,7 @@
 #'@param ntips Number of tips on the phylogenetic tree.
 #'@param igraph.tree Phylogenetic tree converted into a graph
 #'@param thresh SNP threshold for sub-group isolates on the phylogentic tree.
-#'
-#' subgrp()
+
 
 
 subgrp <- function(dfs, tree, assign, igraph.tree, thresh){

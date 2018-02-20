@@ -2,7 +2,7 @@
 % Please edit documentation in R/node_tips_max_dist.R
 \name{node_tips_max_dist}
 \alias{node_tips_max_dist}
-\title{node_tips_max_dist}
+\title{Node to tips maximum distance.}
 \usage{
 node_tips_max_dist(node, subtree, igraph.tree, tree, ntips)
 }

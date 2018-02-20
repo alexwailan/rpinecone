@@ -2,12 +2,13 @@
 % Please edit documentation in R/get_path_distance_function.R
 \name{get_path_distance}
 \alias{get_path_distance}
-\title{Get the distance of a path}
+\title{Get the distance of a path on tree in graph form.}
 \usage{
 get_path_distance(graph_tree, root, node, input_tree)
 }
 \arguments{
-\item{graph_tree}{A rooted tree of newick format, converted into graph form by igraph.}
+\item{graph_tree}{A rooted tree of newick format, converted
+into graph form by igraph.}
 
 \item{root}{A node in the graph you want to begin the path.}
 
@@ -17,8 +18,8 @@ get_path_distance(graph_tree, root, node, input_tree)
 }
 \value{
 The SNP distance between given root and node.
-get_path_distance()
 }
 \description{
-This function returns the path distance between node and tip on a rooted tree, in a root to tip direction.
+This function returns the path distance between
+node and tip on a rooted tree, in a root to tip direction.
 }
