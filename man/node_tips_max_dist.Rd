@@ -19,5 +19,5 @@ node_tips_max_dist(node, subtree, igraph.tree, tree, ntips)
 }
 \description{
 Identify the maximum distance from an internal node amongst all
-tips
+tips.
 }

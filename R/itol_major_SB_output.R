@@ -1,13 +1,14 @@
-#' itol_major_SB_binary_template
+#' itol_major_SB_output
 #'
 #' Function to output the results of maria to itol
 #' This will change your tip labels to the sub-group number of the isolate
 #' @param input output from maria
 #' @import RColorBrewer
 #'
+#' itol_major_SB_output()
 
 
-itol_major_SB_binary_template <- function(input){
+itol_major_SB_output <- function(input){
 
   majSBno <- input$majorSBno
   tips <- input$ntips
@@ -35,7 +36,7 @@ itol_major_SB_binary_template <- function(input){
   outputTable = mat.or.vec(nrow(preparingTable) + 9, 1)
 
   #Itol Header Settings
-  outputTableHeaderVector <- rbind("DATASET_COLORSTRIP",
+  outputTableHeader <- rbind("DATASET_COLORSTRIP",
                                    "SEPARATOR COMMA",
                                    "DATASET_LABEL,Major Sub-Group",
                                    "COLOR_BRANCHES,0",
@@ -45,10 +46,10 @@ itol_major_SB_binary_template <- function(input){
                                    "LEGEND_LABELS",
                                    "DATA")
   for (i in 1:9){ #Place headers into Table
-    outputTable[i] <- outputTableHeaderVector[i, ]
+    outputTable[i] <- outputTableHeader[i, ]
   }
 
-  #With rows of the above table, collapse each row and its elements into one element for export after headers
+  # Collapse each row of the above tableinto one element for export after headers
   for (i in 1:nrow(preparingTable)){
     row = i + 9
     outputTable[row] <- paste(preparingTable[i,],collapse=",")

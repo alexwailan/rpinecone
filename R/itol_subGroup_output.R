@@ -33,7 +33,6 @@ itol_subGroup_output <- function(input){
 
   outputTable = mat.or.vec(nrow(preparingTable) + 9, 1)
 
-
   #Itol Header Settings
   outputTableHeaderVector <- rbind("DATASET_COLORSTRIP",
                                    "SEPARATOR COMMA",
@@ -49,7 +48,7 @@ itol_subGroup_output <- function(input){
   }
 
 
-  #With rows of the above table, collapse each row and its elements into one element for export after headers
+  # Collapse each row of the above tableinto one element for export after headers
   for (i in 1:nrow(preparingTable)){
     row = i + 9
     outputTable[row] <- paste(preparingTable[i,],collapse=",")

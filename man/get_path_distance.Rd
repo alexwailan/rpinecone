@@ -11,12 +11,12 @@ get_path_distance(graph_tree, root, node, input_tree)
 
 \item{root}{A node in the graph you want to begin the path.}
 
-\item{node}{target node.}
+\item{node}{Target node.}
 
-\item{input_tree}{a rooted tree that has been parsed into this script - class "phylo".}
+\item{input_tree}{A rooted newick tree - class "phylo".}
 }
 \value{
-The SNP distance between given root and node
+The SNP distance between given root and node.
 get_path_distance()
 }
 \description{

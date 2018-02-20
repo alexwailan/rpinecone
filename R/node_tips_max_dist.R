@@ -1,7 +1,7 @@
 #' node_tips_max_dist
 #'
 #' Identify the maximum distance from an internal node amongst all
-#' tips
+#' tips.
 #' @param subtree defined by main script
 #' @param igraph.tree a tree converted into graph format by igraph
 #' @param node that is the root of the subtree
@@ -12,26 +12,28 @@
 
 node_tips_max_dist <- function(node, subtree, igraph.tree, tree, ntips){
 
-  #retrieve tips under said node
+  # Retrieve tips under said node
   tips_under_node <- subtree[which(subtree <= ntips)]
 
-  #Create empty vector for  storage
+  # Create empty vector for  storage
   tips_distance_node <- rep(0, length(tips_under_node))
   interation_dist_vector <- 0
 
-  #distances of tips from node
+  # Distances of tips from node
   for (x in tips_under_node){
     tip <- as.numeric(as.character(x))
-    node_tip_dist <- get_path_distance(igraph.tree, #graph
-                                       node, #node that is the root of the subtree
-                                       tip, #tip define distance from said node
-                                       tree) #retrieving the distances from node to tip
+    node_tip_dist <- get_path_distance(igraph.tree,
+                                       node,
+                                       tip,
+                                       tree)
 
-    #going to store the tip distances into a vector
+    # Going to store the tip distances into a vector
     interation_dist_vector <- interation_dist_vector + 1
+
     tips_distance_node[interation_dist_vector] <- node_tip_dist
 
   }
-  #Return the max distance
+
+  # Return the max distance
   return(max(tips_distance_node))
 }
