@@ -8,7 +8,7 @@
 itol_labels_template <- function(input){
 
   tips <- input$ntips
-  table <- input$itolOutput
+  table <- input$output
   Date <- Sys.Date()
   colnames (table) <- NULL
   outputTable = mat.or.vec(tips +3, 1)

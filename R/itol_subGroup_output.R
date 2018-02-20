@@ -8,7 +8,7 @@
 itol_subGroup_output <- function(input){
 
   tips <- input$ntips
-  table <- input$itolOutput
+  table <- input$output
   SGNo <- input$SGNo
 
   Date <- Sys.Date ()
