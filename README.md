@@ -1,4 +1,4 @@
-# maria
+# pinecone
 
 This package sub-groups bacterial isolates of a clonal expansion via a phylogenetic tree.
 
