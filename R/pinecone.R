@@ -1,4 +1,4 @@
-#' maria
+#' pinecone
 #'
 #' Grouping isolates together using an ACCTRANS tree, from root-to-tip.
 #' @param tree Newick formatted ACCTRANS tree.
@@ -13,7 +13,7 @@
 #' @import phytools
 
 
-maria <- function(tree,thresh,rthreshold){
+pinecone <- function(tree,thresh,rthreshold){
 
   # Retrieving date for output file naming purposes.
   Date <- Sys.Date()
