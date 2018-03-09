@@ -8,7 +8,7 @@ Inputs for the package
 	- Relatibility threshold - the number of internal nodes to the root each sub-group must have between each other to be declared as a Major Sub-group
 
 
-# Output of maria
+# Output of pinecone
 Output is a list of lists:
 
 	$SGNo: Number of Subgroups Identified
@@ -22,9 +22,9 @@ Output is a list of lists:
 	$ntips: The number of tips in the tree
 
 # Output for iTOL
-Using the output from maria, there are two functions which can parse the output of the analysis to display on a tree on iTOL. Below is an example and description.
+Using the output from pinecone, there are two functions which can parse the output of the analysis to display on a tree on iTOL. Below is an example and description.
 
-	output <- maria(tree,5,3)
+	output <- pinecone(tree,5,3)
 
 	itol_labels_template(output) - Exports a data file for replacing Tip Labels with Sub-Group number (LABELS)
 
