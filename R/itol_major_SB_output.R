@@ -9,7 +9,7 @@ itol_major_SB_output <- function(input){
 
   majSBno <- input$majorSBno
   tips <- input$ntips
-  table <- input$output
+  table <- input$table
 
   Date <- Sys.Date ()
   colnames (table) <- NULL

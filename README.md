@@ -1,11 +1,11 @@
 # pinecone
 
-This package sub-groups bacterial isolates of a clonal expansion via a phylogenetic tree.
+This package defines sub-lineages within a bacterial clonal expansion via a phylogenetic tree.
 
 Inputs for the package 
 	- A rooted accelerated transformation (ACCTRANS) tree in newick format
 	- SNP threshold - used for sub-grouping
-	- Relatibility threshold - the number of internal nodes to the root each sub-group must have between each other to be declared as a Major Sub-group
+	- Relatibility threshold - the number of internal vertices each sub-lineage must have between each other to form a Major Sub-group
 
 
 # Output of pinecone
@@ -17,7 +17,7 @@ Output is a list of lists:
 
 	$singletons: Number of Singletons remaining
 
-	$output: Table of the subgrouping analysis stating the Sub-group and Major Sub-group identified for each isolate.
+	$table: Table of the subgrouping analysis stating the Sub-group and Major Sub-group identified for each isolate.
 
 	$ntips: The number of tips in the tree
 
@@ -28,6 +28,6 @@ Using the output from pinecone, there are two functions which can parse the outp
 
 	itol_labels_template(output) - Exports a data file for replacing Tip Labels with Sub-Group number (LABELS)
 
-	itol_major_SB_binary_template(output) -  Exports a data file for displaying the Major Sub-Groups (DATASET_COLOURSTRIP)
+	itol_major_SB_output(output) -  Exports a data file for displaying the Major Sub-Groups (DATASET_COLOURSTRIP)
 
-	itol_subGroup_binary_template(output) - Exports a data file for displaying the Sub-Groups (DATASET_COLOURSTRIP)
+	itol_subGroup_output(output) - Exports a data file for displaying the Sub-Groups (DATASET_COLOURSTRIP)

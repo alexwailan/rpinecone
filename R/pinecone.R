@@ -95,7 +95,7 @@ pinecone <- function(tree,thresh,rthreshold){
      singletons = remaining_singletons,
 
      # 4: Output table of analysis
-     output = data,
+     table = data,
 
      # 5: Stating the number of tips in the tree
      ntips = ntips
