@@ -1,8 +1,8 @@
 #' Label change Itol Output for Sub-Groups.
 #'
-#' Function to output the results of maria to itol
+#' Function to output the results of pinecone to itol
 #' This will change your tip labels to the sub-group number of the isolate
-#' @param input output from maria
+#' @param input output from pinecone
 #'
 
 itol_labels_template <- function(input){

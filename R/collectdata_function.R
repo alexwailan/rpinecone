@@ -15,7 +15,7 @@ collectdata <- function(tree,assign,maj_subgrouping){
   ntips <- Ntip(tree)
 
   # Collating the tip labels and their respective Sub-Group and Major Sub-Group
-  colnames(table) <- c("Taxa", "Sub-group", "Major.Sub-group")
+  colnames(table) <- c("Taxa", "Sub-lineage", "Major.Sub-lineage")
 
   table[, 1] <- tree$tip.label
 

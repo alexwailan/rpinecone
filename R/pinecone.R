@@ -1,10 +1,10 @@
 #' pinecone
 #'
-#' Grouping isolates together using an ACCTRANS tree, from root-to-tip.
+#' Sub-lineage identification using an ACCTRANS tree, from root-to-tip.
 #' @param tree Newick formatted ACCTRANS tree.
-#' @param thresh SNP threshold for sub-grouping isolates.
+#' @param thresh SNP threshold for sub-lineage identification.
 #' @param rthreshold The threhold number of ancestral nodes to the root
-#' each sub-group must have if they are to be declared as major sub-groups
+#' each sub-lineage must have if they are to be declared as major sub-lineages
 #' @import geiger
 #' @import ape
 #' @import igraph
@@ -33,7 +33,7 @@ pinecone <- function(tree,thresh,rthreshold){
 
   #===========================================================================#
   #                                                                           #
-  #                  Define variables for Sub-grouping                        #
+  #        Define variables for Sub-lineage identification                    #
   #                                                                           #
   #===========================================================================#
 
@@ -63,13 +63,13 @@ pinecone <- function(tree,thresh,rthreshold){
 
   #===========================================================================#
   #                                                                           #
-  #                   Identification of Major Sub-Grouping                    #
+  #                   Identification of Major Sub-lineages                    #
   #                                                                           #
   #===========================================================================#
 
-  majSubs <- majorsub(sgnum, tree, assign, rthreshold)
+  majSubs <- majorlineage(sgnum, tree, assign, rthreshold)
 
-  numbmajorsubgroup <- max(majSubs$maj_subgroup_assign)
+  numbmajorsublineage <- max(majSubs$maj_sublineage_assign)
 
   #===========================================================================#
   #                                                                           #
@@ -77,7 +77,7 @@ pinecone <- function(tree,thresh,rthreshold){
   #                                                                           #
   #===========================================================================#
 
-  # Number of singletons after sub-grouping
+  # Number of singletons after sub-lineage identification
   remaining_singletons <- which(assign[1:ntips] == 0)
 
   data <- collectdata(tree,assign,majSubs)
@@ -85,11 +85,11 @@ pinecone <- function(tree,thresh,rthreshold){
    # collating variables from above
    output <- list(
 
-     # 1: Number of Subgroups Identified
-     SGNo = sgnum,
+     # 1: Number of Sublineages Identified
+     SLno = sgnum,
 
-     # 2: Number of Major Subgroups
-     majorSBno = numbmajorsubgroup,
+     # 2: Number of Major Sublineages
+     majorSLno = numbmajorsublineage,
 
      # 3: Number of Singletons remaining
      singletons = remaining_singletons,
@@ -103,18 +103,18 @@ pinecone <- function(tree,thresh,rthreshold){
 
    cat("",
        paste("Number of Isolates on tree: ", ntips),
-       paste("Number of Sub-groups identified: ", sgnum),
-       paste("Number of Major Subgroups identified: ", numbmajorsubgroup),
+       paste("Number of Sub-lineages identified: ", sgnum),
+       paste("Number of Major Sublineages identified: ", numbmajorsublineage),
        paste("Number of Singletons remain: ", length(remaining_singletons)),
        sep = "\n")
 
-   #Display Sub-Grouping stats to terminal
-   for (i in 1:numbmajorsubgroup){
-     numbmajorsubgroupmems <- length(which(data[, 3] == i))
-     numbmajorsubgroupsgnum <- length(which(majSubs$majorsublist[, 2] == i))
-     cat(paste("Major Sub-Group ", i,
-               "is composed of ", numbmajorsubgroupsgnum,
-               " Sub-Groups & ", numbmajorsubgroupmems,
+   #Display Sub-lineage identification stats to terminal
+   for (i in 1:numbmajorsublineage){
+     numbmajorsublineagemems <- length(which(data[, 3] == i))
+     numbmajorsublineagesgnum <- length(which(majSubs$majorsublist[, 2] == i))
+     cat(paste("Major Sub-Lineages ", i,
+               "is composed of ", numbmajorsublineagesgnum,
+               " Sub-lineages & ", numbmajorsublineagemems,
                " isolates."), sep = "\n")
    }
 

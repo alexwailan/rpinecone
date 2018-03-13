@@ -1,15 +1,14 @@
-#' Colourstrip Itol Output of Sub-groups.
+#' Colourstrip Itol Output of Sub-lineage.
 #'
-#' Function to output the results of maria to itol.
-#' This will change your tip labels to the sub-group number of the isolate.
-#' @param input Output list from main maria function.
+#' Function to output the results of pinecone to itol.
+#' @param input Output list from main pinecone function.
 #' @import RColorBrewer
 
-itol_subGroup_output <- function(input){
+itol_sublineage_output <- function(input){
 
   tips <- input$ntips
   table <- input$table
-  SGNo <- input$SGNo
+  SLno <- input$SLno
 
   Date <- Sys.Date ()
   colnames (table) <- NULL
@@ -33,9 +32,9 @@ itol_subGroup_output <- function(input){
   #Itol Header Settings
   outputTableHeaderVector <- rbind("DATASET_COLORSTRIP",
                                    "SEPARATOR COMMA",
-                                   "DATASET_LABEL,Sub-Group",
+                                   "DATASET_LABEL,Sub-lineage",
                                    "COLOR_BRANCHES,0",
-                                   "LEGEND_TITLE,Sub-Group",
+                                   "LEGEND_TITLE,Sub-lineage",
                                    "LEGEND_SHAPES",
                                    "LEGEND_COLORS",
                                    "LEGEND_LABELS",
@@ -51,7 +50,7 @@ itol_subGroup_output <- function(input){
     outputTable[row] <- paste(preparingTable[i,],collapse=",")
   }
 
-  outputname <- paste("subgroups_itol_output_", Date, ".txt", sep = "")
+  outputname <- paste("sublineage_itol_output_", Date, ".txt", sep = "")
   write.table(outputTable,file=outputname,sep = "\t",row.names = FALSE, col.names = FALSE,quote = FALSE)
 
 }

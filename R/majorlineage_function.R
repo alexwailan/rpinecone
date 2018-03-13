@@ -1,4 +1,4 @@
-#' Major Subs
+#' Major lineage
 #'
 #' Function to identify major sub-groups composed of identified sub-groups
 #' Singletons which may not have a sub-group can also be inlcuded in
@@ -12,7 +12,7 @@
 #' intersecting to be declared as a major sub-group.
 #'@param treeNnodes Number of internal nodes on phylogenetic tree.
 #'
-#'majorsub()
+#'majorlineage()
 
 #===========================================================================#
 #                                                                           #
@@ -20,7 +20,7 @@
 #                                                                           #
 #===========================================================================#
 
-majorsub <- function(sgnum, tree, assign, rthreshold){
+majorlineage <- function(sgnum, tree, assign, rthreshold){
 
   ntips <- Ntip(tree)
   treeNnodes <- tree$Nnode
@@ -226,7 +226,7 @@ majorsub <- function(sgnum, tree, assign, rthreshold){
   #output variables
   output <- list(
 
-    maj_subgroup_assign = maj_subgroup_assign,
+    maj_sublineage_assign = maj_subgroup_assign,
 
     majorsublist = sgnum_major_subgroup_list
 

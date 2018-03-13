@@ -1,18 +1,18 @@
-#' Sub-group isolates on a phyologentic tree.
+#' Sub-lineage isolates on a phyologentic tree.
 #'
-#' Function to assign sub-groups to isolates according to the
+#' Function to assign sub-lineages to isolates according to the
 #' structure of a rooted tree.
 #'
 #'@param dfs The depth-first search performed on the igraph tree.
 #'@param tree The rooted phylogenetic tree.
-#'@param assign Vector of Sub-group numbers corresponding to tips on a tree.
+#'@param assign Vector of Sub-lineage numbers corresponding to tips on a tree.
 #'@param ntips Number of tips on the phylogenetic tree.
 #'@param igraph.tree Phylogenetic tree converted into a graph
-#'@param thresh SNP threshold for sub-group isolates on the phylogentic tree.
+#'@param thresh SNP threshold for sub-lineage isolates on the phylogentic tree.
 
 
 
-subgrp <- function(dfs, tree, assign, igraph.tree, thresh){
+sublineage <- function(dfs, tree, assign, igraph.tree, thresh){
 
   sgnum <- 0
   ntips <- Ntip(tree)
@@ -33,10 +33,10 @@ subgrp <- function(dfs, tree, assign, igraph.tree, thresh){
       cat("", paste(tree$node.label[node - ntips], " will be investigated."), sep = "\n")
     }
 
-    #Node must no be assigned to a Sub-Group
+    #Node must no be assigned to a Sub-lineage
     if (assign[node] <= 0){
 
-      #Need to generate a subree for sub-grouping analysis
+      #Need to generate a subree for sub-lineage analysis
       subtree <- graph.dfs(igraph.tree, node, neimode = "out", unreachable = FALSE)$order
 
       subtree <- subtree[!is.na(subtree)]
@@ -47,27 +47,27 @@ subgrp <- function(dfs, tree, assign, igraph.tree, thresh){
       #Define the tips connected to node at zero distance
       tips_0_dist_node <- tips_node_zero_dist(node, subtree, igraph.tree, tree, ntips)
 
-      #Logical sub-grouping numbering; composed of two parameters - threshold && zero distance
+      #Logical sub-lineage numbering; composed of two parameters - threshold && zero distance
       if (node_tips_max_dist <= thresh){
 
         sgnum <- sgnum + 1
 
         assign[subtree] <- sgnum
 
-        cat(paste("Threhold met - Sub-Group Number assigned: ", sgnum), sep = "\n")
+        cat(paste("Threhold met - Sub-lineage Number assigned: ", sgnum), sep = "\n")
 
       } else
         if (sum(tips_0_dist_node) > 0 &&
             tips_0_dist_node[1] != sum(tips_0_dist_node)){
 
-          # Sub-grouping tips in zero distance to node when max distance is over threshold
+          # Sub-lineage tips in zero distance to node when max distance is over threshold
           sgnum <- sgnum + 1
 
           assign[tips_0_dist_node] <- sgnum
 
           assign[node] <- sgnum
 
-          cat(paste("Internal sub-group detected - Sub-group number assigned: ", sgnum), sep = "\n")
+          cat(paste("Internal sub-lineage detected - Sub-lineage number assigned: ", sgnum), sep = "\n")
 
         }
 
