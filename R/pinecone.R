@@ -57,9 +57,9 @@ pinecone <- function(tree,thresh,rthreshold){
   #                                                                           #
   #===========================================================================#
 
-  assign <- subgrp(dfs, tree, assign, igraph.tree, thresh)
+  assign <- sublineage(dfs, tree, assign, igraph.tree, thresh)
 
-  sgnum <- max(assign)
+  slnum <- max(assign)
 
   #===========================================================================#
   #                                                                           #
@@ -67,7 +67,7 @@ pinecone <- function(tree,thresh,rthreshold){
   #                                                                           #
   #===========================================================================#
 
-  majSubs <- majorlineage(sgnum, tree, assign, rthreshold)
+  majSubs <- majorlineage(slnum, tree, assign, rthreshold)
 
   numbmajorsublineage <- max(majSubs$maj_sublineage_assign)
 
@@ -86,7 +86,7 @@ pinecone <- function(tree,thresh,rthreshold){
    output <- list(
 
      # 1: Number of Sublineages Identified
-     SLno = sgnum,
+     SLno = slnum,
 
      # 2: Number of Major Sublineages
      majorSLno = numbmajorsublineage,
@@ -103,7 +103,7 @@ pinecone <- function(tree,thresh,rthreshold){
 
    cat("",
        paste("Number of Isolates on tree: ", ntips),
-       paste("Number of Sub-lineages identified: ", sgnum),
+       paste("Number of Sub-lineages identified: ", slnum),
        paste("Number of Major Sublineages identified: ", numbmajorsublineage),
        paste("Number of Singletons remain: ", length(remaining_singletons)),
        sep = "\n")
@@ -111,9 +111,9 @@ pinecone <- function(tree,thresh,rthreshold){
    #Display Sub-lineage identification stats to terminal
    for (i in 1:numbmajorsublineage){
      numbmajorsublineagemems <- length(which(data[, 3] == i))
-     numbmajorsublineagesgnum <- length(which(majSubs$majorsublist[, 2] == i))
+     numbmajorsublineageslnum <- length(which(majSubs$majorsublist[, 2] == i))
      cat(paste("Major Sub-Lineages ", i,
-               "is composed of ", numbmajorsublineagesgnum,
+               "is composed of ", numbmajorsublineageslnum,
                " Sub-lineages & ", numbmajorsublineagemems,
                " isolates."), sep = "\n")
    }

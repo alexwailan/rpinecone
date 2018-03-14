@@ -14,7 +14,7 @@
 
 sublineage <- function(dfs, tree, assign, igraph.tree, thresh){
 
-  sgnum <- 0
+  slnum <- 0
   ntips <- Ntip(tree)
 
     # generating a vector the size of ntips+tree$Nnode corresponding to the number of positions within the tree data
@@ -50,24 +50,24 @@ sublineage <- function(dfs, tree, assign, igraph.tree, thresh){
       #Logical sub-lineage numbering; composed of two parameters - threshold && zero distance
       if (node_tips_max_dist <= thresh){
 
-        sgnum <- sgnum + 1
+        slnum <- slnum + 1
 
-        assign[subtree] <- sgnum
+        assign[subtree] <- slnum
 
-        cat(paste("Threhold met - Sub-lineage Number assigned: ", sgnum), sep = "\n")
+        cat(paste("Threhold met - Sub-lineage Number assigned: ", slnum), sep = "\n")
 
       } else
         if (sum(tips_0_dist_node) > 0 &&
             tips_0_dist_node[1] != sum(tips_0_dist_node)){
 
           # Sub-lineage tips in zero distance to node when max distance is over threshold
-          sgnum <- sgnum + 1
+          slnum <- slnum + 1
 
-          assign[tips_0_dist_node] <- sgnum
+          assign[tips_0_dist_node] <- slnum
 
-          assign[node] <- sgnum
+          assign[node] <- slnum
 
-          cat(paste("Internal sub-lineage detected - Sub-lineage number assigned: ", sgnum), sep = "\n")
+          cat(paste("Internal sub-lineage detected - Sub-lineage number assigned: ", slnum), sep = "\n")
 
         }
 

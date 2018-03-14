@@ -4,12 +4,12 @@
 #'
 #'@param tree The rooted phylogenetic tree.
 #'@param assign Vector of Sub-group numbers corresponding to tips on a tree.
-#'@param maj_subgrouping The output of the Major Sub-Group function
+#'@param maj_sublineage The output of the Major Sub-Lineage function
 #'
 #' collectiondata()
 
 
-collectdata <- function(tree,assign,maj_subgrouping){
+collectdata <- function(tree,assign,maj_sublineage){
 
   table <- mat.or.vec(length(tree$tip.label), 3)
   ntips <- Ntip(tree)
@@ -21,7 +21,7 @@ collectdata <- function(tree,assign,maj_subgrouping){
 
   table[, 2] <- assign[1:ntips]
 
-  table[, 3] <- maj_subgrouping$maj_subgroup_assign[1:ntips]
+  table[, 3] <- maj_sublineage$maj_sublineage_assign[1:ntips]
 
   elems <- which(table[, 2] == 0)
 
