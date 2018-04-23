@@ -19,9 +19,9 @@ itol_sublineage_output <- function(input){
     preparingTable[i, ] <- table[i, c(1, 2, 2)] #Take the samples and their major cluster dupicated in two columns
   }
 
-  for(l in 1:SGNo){
+  for(l in 1:SLno){
     brew_list <- brewer.pal(12, "Paired")
-    colour_list <- colorRampPalette(brewer.pal(12, "Paired"))(SGNo)
+    colour_list <- colorRampPalette(brewer.pal(12, "Paired"))(SLno)
     preparingTable[, 2][preparingTable[, 2]==l] <- colour_list[l] #For said number, check in the second column, which element said number is equal to; for those elements replace with colour HEX code
   }
 

@@ -14,7 +14,7 @@ itol_major_SL_output <- function(input){
   colnames (table) <- NULL
 
 
-  n <- majSBno
+  n <- majSLno
   preparingTable = mat.or.vec(tips, 3)
 
   for(i in 1:tips){

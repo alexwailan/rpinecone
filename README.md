@@ -11,9 +11,9 @@ Inputs for the package
 # Output of pinecone
 Output is a list of lists:
 
-	$SGNo: Number of Subgroups Identified
+	$SLNo: Number of Subgroups Identified
 
-	$majorSBno: Number of Major Subgroups
+	$majorSLno: Number of Major Subgroups
 
 	$singletons: Number of Singletons remaining
 
@@ -27,7 +27,9 @@ Using the output from pinecone, there are two functions which can parse the outp
 	output <- pinecone(tree,5,3)
 
 	itol_labels_template(output) - Exports a data file for replacing Tip Labels with Sub-Group number (LABELS)
+	
+	itol_sublineage_output(output) - Exports a data file for displaying the Sub-Groups (DATASET_COLOURSTRIP)
 
-	itol_major_SB_output(output) -  Exports a data file for displaying the Major Sub-Groups (DATASET_COLOURSTRIP)
+	itol_major_SL_output(output) -  Exports a data file for displaying the Major Sub-Groups (DATASET_COLOURSTRIP)
 
-	itol_subGroup_output(output) - Exports a data file for displaying the Sub-Groups (DATASET_COLOURSTRIP)
+	
