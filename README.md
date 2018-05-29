@@ -1,4 +1,4 @@
-# pinecone
+# rPinecone
 
 This package defines sub-lineages within a bacterial clonal expansion via a phylogenetic tree.
 
@@ -6,9 +6,11 @@ Inputs for the package
 	- A rooted accelerated transformation (ACCTRANS) tree in newick format
 	- SNP threshold - used for sub-grouping
 	- Relatibility threshold - the number of internal vertices each sub-lineage must have between each other to form a Major Sub-group
+	
+rPinecone has a primary wrapper function pinecone(tree, SNP threshold, Relatibility threshold) e.g. output <- pinecone(tree,5,3)
 
 
-# Output of pinecone
+# Output of rPinecone
 Output is a list of lists:
 
 	$SLNo: Number of Subgroups Identified
@@ -21,8 +23,10 @@ Output is a list of lists:
 
 	$ntips: The number of tips in the tree
 
+The pinecone function will also export the tree used within the analysis.
+
 # Output for iTOL
-Using the output from pinecone, there are two functions which can parse the output of the analysis to display on a tree on iTOL. Below is an example and description.
+Using the output from rPinecone, there are two functions which can parse the output of the analysis to display on a tree on iTOL. Below is an example and description.
 
 	output <- pinecone(tree,5,3)
 
