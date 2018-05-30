@@ -1,3 +1,7 @@
+<div align="center">
+    <img src="/misc/rPineconeLogo_full.png?raw=true?" width="250">
+</div>
+
 # rPinecone
 
 This package defines sub-lineages within a bacterial clonal expansion via a phylogenetic tree.
