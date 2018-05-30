@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="/misc/rPineconeLogo_full.png?raw=true?" width="250">
+    <img src="/misc/rPineconeLogo_full.png?raw=true?" width="500">
 </div>
 
 # rPinecone
