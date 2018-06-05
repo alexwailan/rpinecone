@@ -3,7 +3,9 @@
 #' Function to output the results of pinecone to itol
 #' This will change your tip labels to the sub-group number of the isolate
 #' @param input output from pinecone
-#'
+#' @export
+
+
 
 itol_labels_template <- function(input){
 
