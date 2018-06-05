@@ -11,6 +11,7 @@
 #' @import BMhyd
 #' @import phangorn
 #' @import phytools
+#' @export
 
 
 pinecone <- function(tree,thresh,rthreshold){
