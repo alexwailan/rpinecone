@@ -9,9 +9,20 @@ This package defines sub-lineages within a bacterial clonal expansion via a phyl
 Inputs for the package 
 	- A rooted accelerated transformation (ACCTRANS) tree in newick format
 	- SNP threshold - used for sub-grouping
-	- Relatibility threshold - the number of internal vertices each sub-lineage must have between each other to form a Major Sub-group
+	- Relatability threshold - the number of internal vertices each sub-lineage must have between each other to form a Major Sub-group
 	
-rPinecone has a primary wrapper function pinecone(tree, SNP threshold, Relatibility threshold) e.g. output <- pinecone(tree,5,3)
+rPinecone has a primary wrapper function pinecone(tree, SNP threshold, Relatability threshold) e.g. output <- pinecone(tree,5,3)
+
+#Installation
+
+`rpinecone` is currently available on github. It can be installed with `devtools`
+
+```{r, eval = FALSE}
+install.packages("devtools")
+
+devtools::install_github("alexwailan/rpinecone")
+```
+
 
 
 # Output of rPinecone
