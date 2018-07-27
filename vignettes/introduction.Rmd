@@ -1,0 +1,89 @@
+---
+title: "Introduction to rPinecone"
+author: "Alex Wailan"
+date: "`r Sys.Date()`"
+bibliography: bibliography.bib
+output: 
+  html_document:
+    fig_width: 12
+    fig_height: 8
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.width=12, fig.height=8,
+                      echo=TRUE, warning=FALSE, message=FALSE,
+                      tidy=TRUE)
+```
+
+rPinecone, is an R package designed to define sub-lineages within closely related LV populations. rPinecone uses root-to-tip directional approach to define sub-lineages within a phylogenetic tree according to SNV distance from the ancestral node. 
+
+***
+
+
+## Libraries
+
+```{r}
+library(phytools)
+library(rPinecone)
+```
+
+The package defines sub-lineages within a bacterial clonal expansion via a phylogenetic tree.
+
+## Inputs
+
+* A rooted tree in newick format
+* SNP threshold - used for sub-grouping
+* Relatability threshold - the number of internal vertices each sub-lineage must have between each other to form a Major Sub-group
+
+## Operation
+
+After loading a newick formatted tree rPinecone can be called as
+
+```{r}
+tree.file.name <- system.file("extdata", "pyjar.staph_ST2371_45_re_itol_7079_1_6_root.joint.tre", package = "rPinecone")
+tree <- phytools::read.newick(tree.file.name)
+results <- pinecone(tree, 2, 3, quiet = TRUE)
+```
+
+## Exporting results
+
+The resulting output can the be parsed for plotting with iTOL
+
+To exports a data file for replacing Tip Labels with Sub-Group number (LABELS) run
+
+```{r}
+itol_labels_template(results)
+```
+
+To export a data file for displaying the Sub-Groups (DATASET_COLOURSTRIP) run
+```{r}
+itol_sublineage_output(results)
+```
+
+To export a data file for displaying the Major Sub-Groups (DATASET_COLOURSTRIP) run
+```{r}
+itol_major_SL_output(results)
+```
+
+The phylogentic tree with dichotomies resolved into multichotomies can be saved by running
+```{r}
+write.tree(results$tree, file = "rpinecone.tree")
+```
+
+## References
+
+---
+nocite: '@*'
+...
+
+##Appendix
+
+```{r}
+sessionInfo()
+```
