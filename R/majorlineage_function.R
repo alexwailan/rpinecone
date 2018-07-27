@@ -213,7 +213,7 @@ majorlineage <- function(slnum, tree, assign, rthreshold){
           maj_sublineage_assign[singleton_for_assign] <- majlineage
 
         } else {
-          cat(paste("Error: Two Major Subgroups identified for a singleton ", unique(majsl_of_singleton)), sep = "\n")
+          stop(paste("Error: Two Major Subgroups identified for a singleton ", unique(majsl_of_singleton)), sep = "\n")
         }
 
       } # End of If Statement: Major lineage of a Singleton Identification

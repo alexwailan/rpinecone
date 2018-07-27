@@ -8,7 +8,10 @@ Description: The package will take a rooted ACCTRANS tree file and will define s
 License: GPL-3 | file LICENSE
 Encoding: UTF-8
 LazyData: true
-Suggests: testthat
+Suggests: testthat,
+    knitr,
+    rmarkdown
 Imports: geiger (>= 2.0.6), ape (>= 4.1), igraph (>= 1.1.2), BMhyd (>= 1.2-8), phangorn (>= 2.2.0), phytools (>= 0.6-20), RColorBrewer (>= 1.1-2)
 RoxygenNote: 6.0.1
 URL: http://github.com/alexwailan/rpinecone
+VignetteBuilder: knitr

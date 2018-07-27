@@ -12,7 +12,7 @@
 
 
 
-sublineage <- function(dfs, tree, assign, igraph.tree, thresh){
+sublineage <- function(dfs, tree, assign, igraph.tree, thresh, quiet){
 
   slnum <- 0
   ntips <- Ntip(tree)
@@ -25,13 +25,15 @@ sublineage <- function(dfs, tree, assign, igraph.tree, thresh){
     node <- dfs$order[i]
 
     # Skip leaves/tips
-    if (node < ntips + 1) {
-      cat(paste(tree$tip.label[node], " skipped as this is a leaf."), sep = "\n")
-      next
-    } else {
-      #if the number of the "node" is equal or more than ntips+1 it is actually a node; proceed with below
-      cat("", paste(tree$node.label[node - ntips], " will be investigated."), sep = "\n")
+    if(!quiet){
+      if (node < ntips + 1) {
+        cat(paste(tree$tip.label[node], " skipped as this is a leaf."), sep = "\n")
+      } else {
+        #if the number of the "node" is equal or more than ntips+1 it is actually a node; proceed with below
+        cat("", paste(tree$node.label[node - ntips], " will be investigated."), sep = "\n")
+      }
     }
+    if (node < ntips + 1) next
 
     #Node must no be assigned to a Sub-lineage
     if (assign[node] <= 0){
@@ -54,7 +56,9 @@ sublineage <- function(dfs, tree, assign, igraph.tree, thresh){
 
         assign[subtree] <- slnum
 
-        cat(paste("Threhold met - Sub-lineage Number assigned: ", slnum), sep = "\n")
+        if(!quiet){
+          cat(paste("Threhold met - Sub-lineage Number assigned: ", slnum), sep = "\n")
+        }
 
       } else
         if (sum(tips_0_dist_node) > 0 &&
@@ -67,8 +71,9 @@ sublineage <- function(dfs, tree, assign, igraph.tree, thresh){
 
           assign[node] <- slnum
 
-          cat(paste("Internal sub-lineage detected - Sub-lineage number assigned: ", slnum), sep = "\n")
-
+          if(!quiet){
+            cat(paste("Internal sub-lineage detected - Sub-lineage number assigned: ", slnum), sep = "\n")
+          }
         }
 
     } #End of If statement
