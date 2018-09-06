@@ -37,7 +37,10 @@ The package defines sub-lineages within a bacterial clonal expansion via a phylo
 
 ## Inputs
 
-* A rooted tree in newick format
+* A rooted tree in newick format with branch lengths representing SNP distance
+
+    A SNP scaled tree can be produced using the algorithm of Pupko et al. available in python at [pyjar](https://github.com/simonrharris/pyjar#usage)
+
 * SNP threshold - used for sub-grouping
 * Relatability threshold - the number of internal vertices each sub-lineage must have between each other to form a Major Sub-group
 
