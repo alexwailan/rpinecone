@@ -1,6 +1,6 @@
 #' pinecone
 #'
-#' Sub-lineage identification using an ACCTRANS tree, from root-to-tip.
+#' Sub-lineage identification using a phylogentic tree with branch lengths indicating SNP distance.
 #'
 #' @import geiger
 #' @import ape

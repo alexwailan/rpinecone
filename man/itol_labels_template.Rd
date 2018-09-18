@@ -7,9 +7,9 @@
 itol_labels_template(input)
 }
 \arguments{
-\item{input}{output from maria}
+\item{input}{output from pinecone}
 }
 \description{
-Function to output the results of maria to itol
+Function to output the results of pinecone to itol
 This will change your tip labels to the sub-group number of the isolate
 }

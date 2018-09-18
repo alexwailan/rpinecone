@@ -4,14 +4,14 @@
 \alias{collectdata}
 \title{collectiondata}
 \usage{
-collectdata(tree, assign, maj_subgrouping)
+collectdata(tree, assign, maj_sublineage)
 }
 \arguments{
 \item{tree}{The rooted phylogenetic tree.}
 
 \item{assign}{Vector of Sub-group numbers corresponding to tips on a tree.}
 
-\item{maj_subgrouping}{The output of the Major Sub-Group function
+\item{maj_sublineage}{The output of the Major Sub-Lineage function
 
 collectiondata()}
 }

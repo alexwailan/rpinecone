@@ -1,0 +1,76 @@
+---
+bibliography: vignettes/bibliography.bib
+output: 
+  github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "inst/vignette-supp/",
+  echo=TRUE, 
+  warning=FALSE, 
+  message=FALSE,
+  tidy=TRUE
+)
+```
+
+
+```{r pressure, echo=FALSE, out.width = '100%'}
+knitr::include_graphics("inst/vignette-supp/rPineconeLogo_full.png")
+```
+
+rPinecone defines sub-lineages within a bacterial clonal expansion via a phylogenetic tree.
+
+
+## Installation
+
+`rPinecone` is currently available on github. It can be installed with `devtools`
+
+```{r, eval = FALSE}
+install.packages("devtools")
+
+devtools::install_github("alexwailan/rpinecone")
+```
+
+## Quick Start
+
+Run rPinecone
+
+```{r, fig.width =8, fig.height=6, fig.align='center'}
+# devtools::install_github("alexwailan/rpinecone")
+library(rPinecone)
+library(ape)
+
+tree.file.name <- system.file("extdata", "pyjar.staph_ST2371_45_re_itol_7079_1_6_root.joint.tre", package = "rPinecone")
+tree <- ape::read.tree(tree.file.name)
+results <- pinecone(tree, 2, 3, quiet = TRUE)
+```
+
+```{r, echo = FALSE}
+intro_rmd <- 'vignettes/introduction.Rmd'
+
+raw_rmd <- readLines(intro_rmd)
+
+# remove yaml 
+yaml_lines <- grep("---", raw_rmd)
+
+# remove appendix (session info)
+appendix <- grep("Appendix", raw_rmd)
+
+compressed_rmd <- raw_rmd[c(-seq(yaml_lines[1], yaml_lines[2], by = 1), 
+                            -seq(appendix, length(raw_rmd)))]
+writeLines(compressed_rmd, "child.Rmd")
+```
+
+```{r, child = 'child.Rmd'}
+```
+
+```{r cleanup, echo=FALSE, include=FALSE}
+if (file.exists("child.Rmd")) {
+  file.remove("child.Rmd")
+}
+```
