@@ -23,11 +23,11 @@ Run rPinecone
 ``` r
 # devtools::install_github('alexwailan/rpinecone')
 library(rPinecone)
-library(phytools)
+library(ape)
 
 tree.file.name <- system.file("extdata", "pyjar.staph_ST2371_45_re_itol_7079_1_6_root.joint.tre", 
     package = "rPinecone")
-tree <- phytools::read.newick(tree.file.name)
+tree <- ape::read.tree(tree.file.name)
 results <- pinecone(tree, 2, 3, quiet = TRUE)
 ```
 
@@ -63,7 +63,7 @@ After loading a newick formatted tree rPinecone can be called as
 ``` r
 tree.file.name <- system.file("extdata", "pyjar.staph_ST2371_45_re_itol_7079_1_6_root.joint.tre", 
     package = "rPinecone")
-tree <- phytools::read.newick(tree.file.name)
+tree <- ape::read.tree(tree.file.name)
 results <- pinecone(tree, 2, 3, quiet = TRUE)
 ```
 
