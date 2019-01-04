@@ -57,8 +57,9 @@ Inputs
 
 Operation
 ---------
+We recommend using the ape package to read in your newick formatted tree.
 
-After loading a newick formatted tree rPinecone can be called as
+After loading a tree rPinecone can be called as follows:
 
 ``` r
 tree.file.name <- system.file("extdata", "pyjar.staph_ST2371_45_re_itol_7079_1_6_root.joint.tre", 
@@ -70,7 +71,7 @@ results <- pinecone(tree, 2, 3, quiet = TRUE)
 Exporting results
 -----------------
 
-The resulting output can the be parsed for plotting with iTOL
+iTOL (https://itol.embl.de/) is a web-based tool to visualise phylogenetic trees. This tool also allows users to overlay meta data on the tree through numerous annotation files which can be drag-and-dropped onto the tree. rPinecone is able to output these annotation files in a colour block format for visualisation of Sub-lineags on a phylogenetic tree. rPinecone can also provide a annotation file to replace Tip labels of the tree with the sample's corresponding Sub-group number.
 
 To exports a data file for replacing Tip Labels with Sub-Group number (LABELS) run
 
