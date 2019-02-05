@@ -30,7 +30,9 @@ collectdata <- function(tree,assign,maj_sublineage){
 
   singletonsii <- which(table[, 2] == "singleton_")
 
-  table[singletonsii, 2] <- paste("singleton_", seq(1, length(singletonsii), 1), sep = "")
+  if(length(singletonsii)>0){
+    table[singletonsii, 2] <- paste("singleton_", seq(1, length(singletonsii), 1), sep = "")
+  }
 
   return(table)
 }

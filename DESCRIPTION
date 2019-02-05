@@ -11,7 +11,15 @@ LazyData: true
 Suggests: testthat,
     knitr,
     rmarkdown
-Imports: geiger (>= 2.0.6), ape (>= 4.1), igraph (>= 1.1.2), BMhyd (>= 1.2-8), phangorn (>= 2.2.0), phytools (>= 0.6-20), RColorBrewer (>= 1.1-2)
-RoxygenNote: 6.0.1
+Imports: 
+    geiger (>= 2.0.6),
+    ape,
+    igraph (>= 1.1.2),
+    BMhyd (>= 1.2-8),
+    phangorn,
+    phytools (>= 0.6-20),
+    RColorBrewer (>= 1.1-2),
+    combinat
+RoxygenNote: 6.1.1
 URL: http://github.com/alexwailan/rpinecone
 VignetteBuilder: knitr

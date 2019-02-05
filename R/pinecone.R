@@ -49,14 +49,14 @@ pinecone <- function(tree, thresh, rthreshold, quiet=FALSE){
   #===========================================================================#
 
   # Number of tips
-  ntips <- Ntip(tree)
+  ntips <- ape::Ntip(tree)
 
   # Convert tree in igraph form - Takes a 2 column matrix edge list
-  igraph.tree <- graph.edgelist(tree$edge)
+  igraph.tree <- igraph::graph.edgelist(tree$edge)
 
 
   # Perform Depth First Search on graph
-  dfs <- graph.dfs(igraph.tree,
+  dfs <- igraph::graph.dfs(igraph.tree,
                    root = ntips + 1,
                    neimode = "out",
                    order = TRUE,
@@ -68,7 +68,7 @@ pinecone <- function(tree, thresh, rthreshold, quiet=FALSE){
   #                                                                           #
   #===========================================================================#
 
-  assign <- sublineage(dfs, tree, assign, igraph.tree, thresh, quiet)
+  assign <- rPinecone:::sublineage(dfs, tree, assign, igraph.tree, thresh, quiet)
 
   slnum <- max(assign)
 
@@ -78,9 +78,9 @@ pinecone <- function(tree, thresh, rthreshold, quiet=FALSE){
   #                                                                           #
   #===========================================================================#
 
-  majSubs <- majorlineage(slnum, tree, assign, rthreshold)
+  majSubs <- rPinecone:::majorlineage(slnum, tree, assign, rthreshold)
 
-  numbmajorsublineage <- max(majSubs$maj_sublineage_assign)
+  numbmajorsublineage <- max(c(0, majSubs$maj_sublineage_assign), na.rm = TRUE)
 
   #===========================================================================#
   #                                                                           #
@@ -91,49 +91,49 @@ pinecone <- function(tree, thresh, rthreshold, quiet=FALSE){
   # Number of singletons after sub-lineage identification
   remaining_singletons <- which(assign[1:ntips] == 0)
 
-  data <- collectdata(tree,assign,majSubs)
+  data <- rPinecone:::collectdata(tree,assign,majSubs)
 
-   # collating variables from above
-   output <- list(
+  # collating variables from above
+  output <- list(
 
-     # 1: Number of Sublineages Identified
-     SLno = slnum,
+    # 1: Number of Sublineages Identified
+    SLno = slnum,
 
-     # 2: Number of Major Sublineages
-     majorSLno = numbmajorsublineage,
+    # 2: Number of Major Sublineages
+    majorSLno = numbmajorsublineage,
 
-     # 3: Number of Singletons remaining
-     singletons = remaining_singletons,
+    # 3: Number of Singletons remaining
+    singletons = remaining_singletons,
 
-     # 4: Output table of analysis
-     table = data,
+    # 4: Output table of analysis
+    table = data,
 
-     # 5: Stating the number of tips in the tree
-     ntips = ntips,
+    # 5: Stating the number of tips in the tree
+    ntips = ntips,
 
-     # 6: The phylogentic tree with dichotomies resolved into multichotomies.
-     tree=tree
-   )
+    # 6: The phylogentic tree with dichotomies resolved into multichotomies.
+    tree=tree
+  )
 
-   if(!quiet){
-     cat("",
-         paste("Number of Isolates on tree: ", ntips),
-         paste("Number of Sub-lineages identified: ", slnum),
-         paste("Number of Major Sublineages identified: ", numbmajorsublineage),
-         paste("Number of Singletons remain: ", length(remaining_singletons)),
-         sep = "\n")
+  if(!quiet){
+    cat("",
+        paste("Number of Isolates on tree: ", ntips),
+        paste("Number of Sub-lineages identified: ", slnum),
+        paste("Number of Major Sublineages identified: ", numbmajorsublineage),
+        paste("Number of Singletons remain: ", length(remaining_singletons)),
+        sep = "\n")
 
-     #Display Sub-lineage identification stats to terminal
-     for (i in 1:numbmajorsublineage){
-       numbmajorsublineagemems <- length(which(data[, 3] == i))
-       numbmajorsublineageslnum <- length(which(majSubs$majorsublist[, 2] == i))
-       cat(paste("Major Sub-Lineages ", i,
-                 "is composed of ", numbmajorsublineageslnum,
-                 " Sub-lineages & ", numbmajorsublineagemems,
-                 " isolates."), sep = "\n")
-     }
-   }
+    #Display Sub-lineage identification stats to terminal
+    for (i in 1:numbmajorsublineage){
+      numbmajorsublineagemems <- length(which(data[, 3] == i))
+      numbmajorsublineageslnum <- length(which(majSubs$majorsublist[, 2] == i))
+      cat(paste("Major Sub-Lineages ", i,
+                "is composed of ", numbmajorsublineageslnum,
+                " Sub-lineages & ", numbmajorsublineagemems,
+                " isolates."), sep = "\n")
+    }
+  }
 
-   return(output)
+  return(output)
 
 }
