@@ -26,6 +26,15 @@ majorlineage <- function(slnum, tree, assign, rthreshold){
   treeNnodes <- tree$Nnode
   sl_intersect_list <- list()
 
+  if(slnum<=1){
+    # we cant find any major sublineages -> output variables
+    output <- list(
+      maj_sublineage_assign = rep(NA, ntips),
+      majorsublist = NA
+    )
+    return(output)
+  }
+
   for (i in 1:slnum){
     # For each SG retrieve relevant indexes
     slnum_elements <- which(assign == i)
@@ -66,15 +75,25 @@ majorlineage <- function(slnum, tree, assign, rthreshold){
   # which lists in the Pair-wise comparison list of lists have equal or more than internal node relatibility threshold
   major_sublineage_comb <- which(out >= rthreshold)
 
-  # Extracting the subgroup number for the above
-  for (i in 1:length(major_sublineage_comb)){
-
-    combin_element <- combinations[, major_sublineage_comb[i]]
-    major_sublineage_intersect[[i]] <- combin_element
-
+  if(length(major_sublineage_comb)<=0){
+    # we cant find any major sublineages -> output variables
+    output <- list(
+      maj_sublineage_assign = rep(NA, ntips),
+      majorsublist = NA
+    )
+    return(output)
   }
 
-  # Combination Function! need to combine lists with overlapping slnum;
+  # Extracting the subgroup number for the above
+  if(length(major_sublineage_comb)>0){
+    for (i in 1:length(major_sublineage_comb)){
+
+      combin_element <- combinations[, major_sublineage_comb[i]]
+      major_sublineage_intersect[[i]] <- combin_element
+    }
+  }
+
+  # Combination Function! need to combine lists with overlapping slnum
   # Goal: If there are overlapping numbers in differents lists combine them
   for (i in seq_along(major_sublineage_intersect)
        [-length(major_sublineage_intersect)]){
@@ -151,15 +170,16 @@ majorlineage <- function(slnum, tree, assign, rthreshold){
   combinations <- combn(length(sl_intersect_list), 2)
 
   # Retrieve ancestors for  said singleton & store into a list
-  for (i in 1:nsingleton){
-    said_singleton <- singleton_elements[i]
+  if (nsingleton>0){
+    for (i in 1:nsingleton){
+      said_singleton <- singleton_elements[i]
 
-    # Generate a list of each slnum taking the 1st element
-    singleton_ancestors <- Ancestors(tree, said_singleton, type = c("all"))
+      # Generate a list of each slnum taking the 1st element
+      singleton_ancestors <- Ancestors(tree, said_singleton, type = c("all"))
 
-    # List in order of singleton number
-    singleton_ancestor_list[i] <- list(singleton_ancestors)
-
+      # List in order of singleton number
+      singleton_ancestor_list[i] <- list(singleton_ancestors)
+    }
   }
 
   # Step 2: Create a basis to compare the ancestor nodes of each singleton with those of each lineage
@@ -167,57 +187,59 @@ majorlineage <- function(slnum, tree, assign, rthreshold){
   result.df <- expand.grid(sl_intersect_list, singleton_ancestor_list)
 
   # For each singleton, retrieve the "block" of said singleton + lineage number combinations
-  for (i in 1:nsingleton){
+  if (nsingleton>0){
+    for (i in 1:nsingleton){
 
-    # Define the block
-    singleton_slnum_length <- rep(0, slnum)
-    single_block_start <- (slnum * i) - slnum + 1
-    single_block_end <- i * slnum
-    single_block <- result.df[single_block_start:single_block_end, ]
+      # Define the block
+      singleton_slnum_length <- rep(0, slnum)
+      single_block_start <- (slnum * i) - slnum + 1
+      single_block_end <- i * slnum
+      single_block <- result.df[single_block_start:single_block_end, ]
 
-    # x is the slnum number
-    for (x in 1:nrow(single_block)){
+      # x is the slnum number
+      for (x in 1:nrow(single_block)){
 
-      # Determine the intersect for a said row
-      int <- Reduce(intersect, lapply(single_block, "[[", x))
+        # Determine the intersect for a said row
+        int <- Reduce(intersect, lapply(single_block, "[[", x))
 
-      # Storing how many internal nodes of a lineage intersect with said singleton over or equal to set Relibility Threshold
-      if (length(int) >= rthreshold){
+        # Storing how many internal nodes of a lineage intersect with said singleton over or equal to set Relibility Threshold
+        if (length(int) >= rthreshold){
 
-        singleton_slnum_length[[x]] <- length(int)
+          singleton_slnum_length[[x]] <- length(int)
 
-      }
-
-      # Which lineages overlap in internal nodes with said singleton no equal or more to set threshold
-      slnum_for_singleton_int <- which(singleton_slnum_length >= rthreshold)
-
-      # Singleton needs to have intersected with a lineage && the lineage needs to be declared under a Major lineage
-      if (length(slnum_for_singleton_int) > 0 && any(slnum_major_sublineage_list[, 1] %in% slnum_for_singleton_int) ){
-
-        # Retrieve corresponding Major lineage
-        majsl_of_singleton <- slnum_major_sublineage_list[ which(slnum_major_sublineage_list[, 1] %in% slnum_for_singleton_int), 2]
-
-        # If a singleton has a unique major lineage, store it in the major lineage assigning vector
-        # results are a vector calling a Major lineage multiple times i.e. singleton can have same ancestral nodes with multiple slnums
-
-        # check if major lineage is unique, should have only one calling of a major lineage number.
-        if (length(unique(majsl_of_singleton)) == 1){
-
-          # assign the major lineage to the singletons
-          majlineage <- unique(majsl_of_singleton)
-
-          # convert singleton number into the actual singleton tip number
-          singleton_for_assign <- singleton_elements[i]
-
-          # assign the major lineage identified to the singleton
-          maj_sublineage_assign[singleton_for_assign] <- majlineage
-
-        } else {
-          stop(paste("Error: Two Major Subgroups identified for a singleton ", unique(majsl_of_singleton)), sep = "\n")
         }
 
-      } # End of If Statement: Major lineage of a Singleton Identification
+        # Which lineages overlap in internal nodes with said singleton no equal or more to set threshold
+        slnum_for_singleton_int <- which(singleton_slnum_length >= rthreshold)
 
+        # Singleton needs to have intersected with a lineage && the lineage needs to be declared under a Major lineage
+        if (length(slnum_for_singleton_int) > 0 && any(slnum_major_sublineage_list[, 1] %in% slnum_for_singleton_int) ){
+
+          # Retrieve corresponding Major lineage
+          majsl_of_singleton <- slnum_major_sublineage_list[ which(slnum_major_sublineage_list[, 1] %in% slnum_for_singleton_int), 2]
+
+          # If a singleton has a unique major lineage, store it in the major lineage assigning vector
+          # results are a vector calling a Major lineage multiple times i.e. singleton can have same ancestral nodes with multiple slnums
+
+          # check if major lineage is unique, should have only one calling of a major lineage number.
+          if (length(unique(majsl_of_singleton)) == 1){
+
+            # assign the major lineage to the singletons
+            majlineage <- unique(majsl_of_singleton)
+
+            # convert singleton number into the actual singleton tip number
+            singleton_for_assign <- singleton_elements[i]
+
+            # assign the major lineage identified to the singleton
+            maj_sublineage_assign[singleton_for_assign] <- majlineage
+
+          } else {
+            stop(paste("Error: Two Major Subgroups identified for a singleton ", unique(majsl_of_singleton)), sep = "\n")
+          }
+
+        } # End of If Statement: Major lineage of a Singleton Identification
+
+      }
     }
 
   }
