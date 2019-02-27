@@ -1,0 +1,296 @@
+---
+title: "Comparison with simulations"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    fig_width: 12
+    fig_height: 8
+vignette: >
+  %\VignetteIndexEntry{Introduction to rhierbaps}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.width=12, fig.height=8,
+                      echo=TRUE, warning=FALSE, message=FALSE,
+                      tidy=TRUE)
+```
+
+##Libraries
+
+```{r}
+library(devtools)
+library(rhierbaps)
+library(rPinecone)
+library(ape)
+library(phytools)
+library(coala)
+library(phangorn)
+library(ggtree)
+library(ggplot2)
+library(RColorBrewer)
+library(igraph)
+library(data.table)
+library(patchwork)
+```
+
+##Justifying thresholds
+
+
+***Their method seems to simply collapse nodes with zero-length branches, and then defines sub-lineages as the path from root-to-tip after defining two thresholds for assigning and then clustering sub-lineages. The criteria for defining these thresholds, lines 146-150 and 153-159, would seem to be the only innovation that distinguishes this method from a standard phylogenetic analysis and interpretation. In some sense, the authors are merely formalizing an algorithm for interpreting an unresolved phylogeny. Thus, the authors should better discuss the rationale and strengths/weaknesses of these criteria and thresholds.***
+
+##Demonstrating robustness
+
+***The authors want to robustly define sub-lineages, using trees that are not robust at nodes of interest. A more convincing demonstration is needed than simply applying the method to real data.***
+
+***To demonstrate robustness:***
+
+***1) Some sort of resampling process should be used to take into account the uncertainty in the nodes of interest.***
+
+***2) The method should be applied to simulated data to demonstrate how adequate their criteria are, and then the method can be applied to real data. The application to real data is not very helpful at this point.***
+
+***The authors should consider using SNV distance thresholds, in addition to hierBAPS, for comparison with their method. Presumably, these comparisons will point out deficiencies in these other methods due to inadequate modeling of evolution (for SNV distance thresholds) and violation of assumptions of independence of sites (for hierBAPSs) as nicely summarized on lines 80-90. These comparisons, however, do not validate the authors' method - the simulations indicated above are needed for validation.***
+
+
+I attempted to address these comments by simulating a transmission chain using outbreaker with a low mutation rate. I ran rpinecone, hierBAPS and single-linkage hierarchical SNV clustering on the result and plotted the resulting clusters next to the simulated transmission tree scaled by SNV distance.
+
+I also implemented a function that takes in bootstrap replicates of the phylogeny and runs the rpincone algorithm on each replicate. This can then be summarised as a co-occurence matrix where we count the number of times two isolates appear in the same cluster across the replicates. From this matrix we can then generate clusters where rpinecone clusters the isolates together X% of the time. I have plotted the 50% and 95% intervals along with the full co-occurence matrix next to the SNV scaled phylogeny.
+
+Finally, for ease of use I have created a wrapper function to phanghorn that generates the SNV scaled phylogeny required by rpinecone. This makes the analysis a little easier as everthing is kept in R.
+
+
+```{r}
+seq_length <- 1e6
+sample_size <- c(20)
+mutation_rate <- 0.1
+n_pops <- 5
+migration_rate <- 0.01
+
+model <- coala::coal_model(sample_size = rep(sample_size, n_pops), loci_number = 1, loci_length = seq_length) +
+  feat_mutation(mutation_rate) +
+  feat_migration(0.01, symmetric = TRUE) +
+  sumstat_seg_sites("segsites") +
+  sumstat_trees(name = "trees")
+
+simulate_data <- function(){
+  simu_stats <- simulate(model)
+  
+  sim_tree <- read.tree(text=simu_stats$trees[[1]])
+  
+  # Convert to DNAbin
+  snps <- get_snps(simu_stats$segsites[[1]])
+  snps[snps==0] <- 'A'
+  snps[snps==1] <- 'T'
+  rownames(snps) <- 1:nrow(snps)
+  snps <- snps[match(sim_tree$tip.label, rownames(snps)),]
+  
+  data <- as.DNAbin(snps)
+  
+  return(list(data=data, sim_tree=sim_tree))
+}
+
+run_rpinecone <- function(data, thresh=1, rthresh=1){
+  dm <- dist.dna(data, model = "N")
+  treeNJ <- ape::nj(dm)
+
+  phydata <- as.phyDat(data)
+  fit <- pml(treeNJ, phydata)
+  ml_tree <- optim.pml(fit)$tree
+  ml_tree <- phangorn::midpoint(ml_tree)
+
+  ml_tree <- ace_scale_phylo(ml_tree, data)
+  # plot(ml_tree)
+  
+  pinecone_results <- pinecone(ml_tree, thresh, rthresh, 
+                               quiet = TRUE)
+  clusters <- pinecone_results$table[,2]
+  names(clusters) <- rownames(data)
+  return(clusters)
+}
+
+run_hierbaps <- function(data, level=1){
+  hb_data <- rhierbaps::load_fasta(data)
+  hb_results <- hierBAPS(hb_data, max.depth = level)
+  clusters <- hb_results$partition.df[,level+1]
+  names(clusters) <- hb_results$partition.df$Isolate
+  return(clusters)
+}
+
+snv_cutoff <- function(data, cutoff=2){
+  dm <- ape::dist.dna(data, model = "N")
+  h <- hclust(dm, method = "single")
+  clusters <- cutree(h, h = cutoff)
+  names(clusters) <- rownames(data)
+  return(clusters)
+}
+
+tree_concordance_score <- function(tree, clusters){
+  n <- names(clusters)
+  clusters <- as.numeric(factor(clusters))
+  names(clusters) <- n
+  return(RI(tree, 
+        phyDat(clusters, type="USER", 
+               levels=unique(clusters))))
+}
+
+```
+
+
+## Transmission
+
+First lets simulate some transmission data using Outbreaker
+
+```{r}
+set.seed(9745)
+library(outbreaker)
+
+dat <- simOutbreak(R0 = 2, infec.curve = c(0, 1, 1, 1), n.hosts = 200, mu.transi = 2e-5)
+while(dat$n < 150){
+  dat <- simOutbreak(R0 = 2, infec.curve = c(0, 1, 1, 1), n.hosts = 200, mu.transi = 2e-5)
+}
+```
+
+Lets look at the distribution of SNP distances between direct transmissions
+
+```{r}
+d <- as.matrix(dist.dna(dat$dna, model = "N"))
+hist(d[cbind(dat$ances, dat$id)])
+
+threshold <- 3
+```
+
+Sub-sample to represent partialy sampled outbreak
+
+```{r}
+sampled.isolates <- sample(1:dat$n, 40)
+dna.data <- dat$dna
+rownames(dna.data) <- 1:dat$n
+dna.data <- dna.data[sampled.isolates,]
+```
+
+
+##Infer phylogeny
+
+```{r}
+phy.dat <- as.phyDat(dna.data)
+dm <- dist.dna(dna.data, model = "N")
+tree <- NJ(dm)
+
+system("rm temp.fasta*")
+write.FASTA(dna.data, file="temp.fasta")
+system("iqtree -redo -s temp.fasta")
+tree <- read.tree("./temp.fasta.treefile")
+
+##Scale tree to SNPs
+scaled.tree <- ace_scale_phylo(tree, dna.data)
+
+# Run rPinecone
+pine.result <- rPinecone::pinecone(scaled.tree, thresh = 3, rthreshold = 1)
+
+# Run rhierBAPS
+rbaps.result <- rhierbaps::hierBAPS(as.character(as.matrix(dna.data)), n.pops = 30)
+
+# Run pairwise SNV distance threshold
+h <- hclust(dm, method = "single")
+pairwise.snv.results <- cutree(h, h=2)
+
+# pairwise tree dist cutoff
+d2 <- ape::cophenetic.phylo(scaled.tree)
+h2 <- hclust(as.dist(d2), method = "complete")
+pairwise.tree.dist <- cutree(h2, h=3)
+```
+
+Compare with the transmission network
+
+```{r}
+edges <- cbind(dat$ances, dat$id, dat$nmut)
+edges <- edges[!is.na(edges[,1]),]
+
+trans.network <- matrix(0, nrow = dat$n, ncol = dat$n)
+trans.network[edges[,c(1,2)]] <- edges[,3]+1
+trans.network[edges[,c(2,1)]] <- edges[,3]+1
+
+g <- igraph::graph_from_adjacency_matrix(trans.network, weighted = TRUE)
+E(g)$weight <- 1#E(g)$weight - 1
+
+
+d <- igraph::distances(g)
+rownames(d) <- colnames(d) <- 1:nrow(d)
+d <- d[sampled.isolates,]
+d <- d[,sampled.isolates]
+# d[is.infinite(d)] <- 9999
+
+h <- hclust(as.dist(d), method = "complete")
+trans.dendro <- as.phylo(h)
+
+```
+
+
+```{r}
+plot.df <- as.data.frame(pine.result$table)
+plot.df <- merge(plot.df, rbaps.result$partition.df, by.x="Taxa", by.y="Isolate", all = TRUE)
+plot.df$snv <- pairwise.snv.results[match(plot.df$Taxa, names(pairwise.snv.results))]
+# plot.df$snv <- pairwise.tree.dist[match(plot.df$Taxa, names(pairwise.tree.dist))]
+# plot.df$true.connected <- true.connected[match(plot.df$Taxa, names(true.connected))]
+
+gg <- ggtree(scaled.tree)
+gg <- ggtree(trans.dendro)
+gg <- ggtree(rPinecone::ace_scale_phylo(trans.dendro, dna.data))
+
+f2 <- facet_plot(gg, panel = "rPinecone", data = plot.df, geom = geom_tile, 
+    aes(x = as.numeric(factor(`Sub-lineage`))), fill = "blue")
+# f2 <- facet_plot(f2, panel = "true.connected", data = plot.df, geom = geom_tile, 
+#     aes(x = as.numeric(factor(true.connected))), fill = "orange")
+f2 <- facet_plot(f2, panel = "SNV", data = plot.df, geom = geom_tile, 
+    aes(x = as.numeric(factor(snv))), fill = "red")
+f2 <- facet_plot(f2, panel = "hierBAPS", data = plot.df, geom = geom_tile, 
+    aes(x = as.numeric(factor(`level 2`))), fill = "green")
+f2
+```
+
+## Investigate uncertainty using Bootstrap replicates
+
+```{r}
+system("rm temp.fasta*")
+write.FASTA(dna.data, file="temp.fasta")
+system("iqtree -redo -b 100 -s temp.fasta")
+trees <- read.tree("./temp.fasta.boottrees")
+
+scaled.trees <- lapply(trees, ace_scale_phylo, dna.data)
+
+co.occ.matrix <- boot_pinecone(scaled.trees, thresh = 3, rthreshold = 1)
+co.occ.df <- melt(co.occ.matrix)
+
+h <- hclust(as.dist(max(co.occ.matrix)-co.occ.matrix), method = "complete")
+temp_clust <- cutree(h, h=5)
+plot.df$pinecone_95 <- temp_clust[match(plot.df$Taxa, names(temp_clust))]
+temp_clust <- cutree(h, h=50)
+plot.df$pinecone_50 <- temp_clust[match(plot.df$Taxa, names(temp_clust))]
+
+
+scaled.trans.tree <- rPinecone::ace_scale_phylo(trans.dendro, dna.data)
+
+is_tip <- scaled.trans.tree$edge[,2] <= length(scaled.trans.tree$tip.label)
+ordered_tips <- scaled.trans.tree$edge[is_tip, 2]
+tip.order <- scaled.trans.tree$tip.label[ordered_tips]
+
+combined.trees <- as.multiPhylo(c(trans.dendro, scaled.trans.tree))
+names(combined.trees) <- c("transmission tree", "scaled tree")
+
+gg <- ggtree(scaled.trans.tree)
+f2 <- facet_plot(gg, panel = "rPinecone 95%", data = plot.df, geom = geom_tile, 
+    aes(x = as.numeric(factor(`pinecone_95`))), fill = "blue")
+f2 <- facet_plot(f2, panel = "rPinecone 50%", data = plot.df, geom = geom_tile, 
+    aes(x = as.numeric(factor(`pinecone_50`))), fill = "blue")
+f2 <- facet_plot(f2, panel = "rPinecone Bootstrap co-occurance", data = co.occ.df, geom = geom_tile, 
+    aes(x = as.numeric(factor(`Var2`, levels = tip.order)), fill = value))
+
+f2
+
+gg2 <- ggtree(trans.dendro) + scale_y_continuous(expand=expand_scale(0.06)) + ylab("transmission tree")
+gg2+f2+patchwork::plot_layout(nrow = 1, widths = c(1,3))
+
+```
