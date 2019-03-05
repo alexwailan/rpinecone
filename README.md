@@ -48,7 +48,7 @@ The package defines sub-lineages within a bacterial clonal expansion via a phylo
 Inputs
 ------
 
--   A rooted tree in newick format with branch lengths representing SNP distance
+-   A rooted tree in newick format with branch lengths scaled for SNV distance. A non SNV-scaled tree along with corresponding sequence data can also be provided also to generate the required SNV-scaled tree.
 
     A SNP scaled tree can be produced using the algorithm of Pupko et al. available in python at [pyjar](https://github.com/simonrharris/pyjar#usage)
 
@@ -66,6 +66,13 @@ tree.file.name <- system.file("extdata", "pyjar.staph_ST2371_45_re_itol_7079_1_6
     package = "rPinecone")
 tree <- ape::read.tree(tree.file.name)
 results <- pinecone(tree, 2, 3, quiet = TRUE)
+```
+
+A SNV-scaled tree can also be generated using the function below by taking your tree and corresponding sequence data.
+The tree is required to be a phylo object and the data requires to be a DNAbin object.
+
+``` r
+tree <- ace_scale_phylo(tree, data)
 ```
 
 Exporting results
