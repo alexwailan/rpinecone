@@ -4,6 +4,8 @@
 
 rPinecone defines sub-lineages within a bacterial clonal expansion via a phylogenetic tree.
 
+The publication is freely available at https://www.microbiologyresearch.org/content/journal/mgen/10.1099/mgen.0.000264.
+
 Installation
 ------------
 
@@ -103,6 +105,14 @@ The phylogentic tree with dichotomies resolved into multichotomies can be saved 
 ``` r
 write.tree(results$tree, file = "rpinecone.tree")
 ```
+
+Citation
+---------
+If you use the rPinecone package, please reference the following paper which can be found at the below URL:
+https://www.microbiologyresearch.org/content/journal/mgen/10.1099/mgen.0.000264 
+
+
+Wailan AM, Coll F, Heinz E, Tonkin-Hill G, Corander J, Feasey NA, Thomson NR. 2019. "rPinecone: Define sub-lineages of a clonal expansion via a phylogenetic tree." *Microb Genom. 5(4).* doi: [10.1099/mgen.0.000264] (https://doi.org/10.1099/mgen.0.000264)
 
 References
 ----------
