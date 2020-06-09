@@ -5,7 +5,6 @@
 #' @import geiger
 #' @import ape
 #' @import igraph
-#' @import BMhyd
 #' @import phangorn
 #' @import phytools
 #'

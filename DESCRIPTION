@@ -15,11 +15,10 @@ Imports:
     geiger (>= 2.0.6),
     ape,
     igraph (>= 1.1.2),
-    BMhyd (>= 1.2-8),
     phangorn,
     phytools (>= 0.6-20),
     RColorBrewer (>= 1.1-2),
     combinat
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0
 URL: http://github.com/alexwailan/rpinecone
 VignetteBuilder: knitr

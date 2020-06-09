@@ -18,13 +18,20 @@ ace_scale_phylo <- function(tree, data){
   if(class(tree)!="phylo") stop("tree is not a phylo object!")
   if(class(data)!="DNAbin") stop("data is not a DNAbin object!")
 
+  # convert all non acgt's to unknowns
+  for (i in 1:nrow(data)){
+    data[i,!(data[i,] %in% as.DNAbin(c('a','c','g','t')))] <- as.DNAbin('-')
+  }
+
   # ancestral state reconstruction
   phydata <- phangorn::phyDat(data)
   anc_states <- phangorn::ancestral.pars(tree, phydata, type = "ACCTRAN")
 
-  # adjust edge lengths
+  # scale edge lengths to snp distance
   tree$edge.length <- unlist(lapply(1:nrow(tree$edge), function(i){
-    sum(anc_states[[tree$edge[i,1]]]!=anc_states[[tree$edge[i,2]]])/2
+    sum((anc_states[[tree$edge[i,1]]]!=anc_states[[tree$edge[i,2]]]) &
+          (anc_states[[tree$edge[i,1]]]!=0.25) &
+          (anc_states[[tree$edge[i,2]]]!=0.25))/2
   }))
 
   return(tree)
