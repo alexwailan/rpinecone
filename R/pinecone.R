@@ -131,7 +131,8 @@ pinecone <- function(tree, thresh, rthreshold, quiet=FALSE){
                   "is composed of ", numbmajorsublineageslnum,
                   " Sub-lineages & ", numbmajorsublineagemems,
                   " isolates."), sep = "\n")
-      }
+      
+      } 
     }
   }
 
