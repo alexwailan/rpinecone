@@ -123,13 +123,15 @@ pinecone <- function(tree, thresh, rthreshold, quiet=FALSE){
         sep = "\n")
 
     #Display Sub-lineage identification stats to terminal
-    for (i in 1:numbmajorsublineage){
-      numbmajorsublineagemems <- length(which(data[, 3] == i))
-      numbmajorsublineageslnum <- length(which(majSubs$majorsublist[, 2] == i))
-      cat(paste("Major Sub-Lineages ", i,
-                "is composed of ", numbmajorsublineageslnum,
-                " Sub-lineages & ", numbmajorsublineagemems,
-                " isolates."), sep = "\n")
+    if(numbmajorsublineage != 0){
+      for (i in 1:numbmajorsublineage){
+        numbmajorsublineagemems <- length(which(data[, 3] == i))
+        numbmajorsublineageslnum <- length(which(majSubs$majorsublist[, 2] == i))
+        cat(paste("Major Sub-Lineages ", i,
+                  "is composed of ", numbmajorsublineageslnum,
+                  " Sub-lineages & ", numbmajorsublineagemems,
+                  " isolates."), sep = "\n")
+      }
     }
   }
 
