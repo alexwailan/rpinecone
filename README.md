@@ -55,7 +55,7 @@ Inputs
     A SNP scaled tree can be produced using the algorithm of Pupko et al. available in python at [pyjar](https://github.com/simonrharris/pyjar#usage)
 
 -   SNP threshold - used for sub-grouping
--   Relatability threshold - the number of internal vertices each sub-lineage must have between each other to form a Major Sub-group
+-   Relatability threshold - the number of internal vertices/nodes each sub-lineage must have between each other to form a Major Sub-group
 
 Operation
 ---------
